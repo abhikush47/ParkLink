@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClientServer } from "@/lib/supabase/server";
+import { createClientServer, createAdminClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/client";
 import { parkingAlertSubmissionSchema } from "@/lib/validations";
+import { dispatchTelegramParkingAlert } from "@/lib/telegram";
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,7 +16,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { token, category, custom_message } = parsed.data;
+    const { token, category, custom_message, requester_phone } = parsed.data;
 
     if (isSupabaseConfigured) {
       const ip = request.headers.get("x-forwarded-for") || "unknown";
@@ -41,6 +42,29 @@ export async function POST(request: NextRequest) {
       if (!data.success) {
         const statusCode = data.error === "RATE_LIMITED" ? 429 : 400;
         return NextResponse.json(data, { status: statusCode });
+      }
+
+      // Update requester phone if provided and trigger Telegram alert non-blockingly
+      const alertId = data.alert_id;
+      if (alertId) {
+        try {
+          const admin = createAdminClient();
+          if (admin && requester_phone) {
+            await admin
+              .from("parking_alerts")
+              .update({ requester_phone: requester_phone.trim() })
+              .eq("id", alertId);
+          }
+
+          // Dispatch Telegram notification asynchronously
+          dispatchTelegramParkingAlert(alertId, {
+            requesterPhone: requester_phone?.trim(),
+          }).catch((err) => {
+            console.error("[Telegram Dispatch Error]", err);
+          });
+        } catch (dispatchErr) {
+          console.warn("[Telegram Dispatch Warning]", dispatchErr);
+        }
       }
 
       return NextResponse.json(data, { status: 200 });

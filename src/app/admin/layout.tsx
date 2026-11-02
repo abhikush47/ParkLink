@@ -16,6 +16,7 @@ import {
   LayoutDashboard,
   LogOut,
   ShieldCheck,
+  Send,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -28,6 +29,7 @@ const ADMIN_NAV = [
   { href: "/admin/vehicles", label: "Vehicle Fleet", icon: Car },
   { href: "/admin/qr-codes", label: "QR Code Registry", icon: QrCode },
   { href: "/admin/alerts", label: "Parking Alerts", icon: AlertTriangle },
+  { href: "/admin/telegram", label: "Telegram Bot", icon: Send },
   { href: "/admin/reports", label: "Abuse Reports", icon: Flag },
   { href: "/admin/audit-logs", label: "Audit Logs", icon: FileText },
   { href: "/admin/settings", label: "Platform Settings", icon: Sliders },

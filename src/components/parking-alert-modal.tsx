@@ -64,6 +64,7 @@ export function ParkingAlertModal({
   const toast = useToast();
   const [selectedCategory, setSelectedCategory] = useState<AlertCategory>("blocking");
   const [customMessage, setCustomMessage] = useState("");
+  const [requesterPhone, setRequesterPhone] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
@@ -79,6 +80,7 @@ export function ParkingAlertModal({
           token,
           category: selectedCategory,
           custom_message: customMessage.trim() || undefined,
+          requester_phone: requesterPhone.trim() || undefined,
         }),
       });
 
@@ -102,6 +104,7 @@ export function ParkingAlertModal({
     setTimeout(() => {
       setSubmitted(false);
       setCustomMessage("");
+      setRequesterPhone("");
       setSelectedCategory("blocking");
     }, 300);
   };
@@ -185,6 +188,23 @@ export function ParkingAlertModal({
               onChange={(e) => setCustomMessage(e.target.value)}
               className="w-full text-xs rounded-lg border border-border bg-muted p-2.5 text-foreground placeholder:text-muted-foreground focus:outline-none"
             />
+          </div>
+
+          {/* Optional Requester Phone */}
+          <div className="mt-2.5">
+            <label className="text-xs font-medium text-foreground block mb-1">
+              Your phone or WhatsApp number (optional)
+            </label>
+            <input
+              type="tel"
+              placeholder="e.g. +91 98765 43210 (allows owner to call/message you directly)"
+              value={requesterPhone}
+              onChange={(e) => setRequesterPhone(e.target.value)}
+              className="w-full text-xs rounded-lg border border-border bg-muted px-2.5 py-2 text-foreground placeholder:text-muted-foreground focus:outline-none"
+            />
+            <p className="text-[10px] text-muted-foreground mt-1">
+              Leave blank if you prefer complete anonymity.
+            </p>
           </div>
 
           <div className="mt-2 flex items-center justify-between text-[11px] text-muted-foreground">

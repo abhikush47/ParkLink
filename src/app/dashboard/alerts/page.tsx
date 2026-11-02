@@ -13,6 +13,7 @@ import {
   DoorOpen,
   HelpCircle,
   Eye,
+  Car,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -112,10 +113,17 @@ export default function ParkingAlertsPage() {
   const handleUpdateStatus = async (alertId: string, newStatus: AlertStatus) => {
     try {
       const supabase = createClient();
+      let statusNote = null;
+      if (newStatus === "owner_responding") statusNote = "Owner responded: On the way!";
+      if (newStatus === "delayed") statusNote = "Owner responded: Needs 5 minutes";
+      if (newStatus === "resolved") statusNote = "Vehicle moved and resolved";
+
       const { error } = await supabase
         .from("parking_alerts")
         .update({
           status: newStatus,
+          custom_status_note: statusNote,
+          owner_response_at: newStatus !== "pending" ? new Date().toISOString() : null,
           resolved_at: newStatus === "resolved" ? new Date().toISOString() : null,
         })
         .eq("id", alertId);
@@ -123,9 +131,13 @@ export default function ParkingAlertsPage() {
       if (error) throw error;
 
       setAlerts((prev) =>
-        prev.map((a) => (a.id === alertId ? { ...a, status: newStatus } : a))
+        prev.map((a) =>
+          a.id === alertId
+            ? { ...a, status: newStatus, custom_status_note: statusNote }
+            : a
+        )
       );
-      toast.success(`Alert updated to ${newStatus}`);
+      toast.success(`Alert updated to ${newStatus.replace("_", " ")}`);
     } catch (err: any) {
       toast.error(err.message || "Failed to update alert");
     }
@@ -275,11 +287,23 @@ export default function ParkingAlertsPage() {
                               ? "destructive"
                               : alert.status === "resolved"
                               ? "success"
+                              : alert.status === "owner_responding" || alert.status === "delayed"
+                              ? "outline"
                               : "secondary"
                           }
-                          className="text-[10px] font-mono capitalize"
+                          className={`text-[10px] font-mono capitalize ${
+                            alert.status === "owner_responding"
+                              ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-400"
+                              : alert.status === "delayed"
+                              ? "border-amber-500/50 bg-amber-500/10 text-amber-400"
+                              : ""
+                          }`}
                         >
-                          {alert.status}
+                          {alert.status === "owner_responding"
+                            ? "On the way"
+                            : alert.status === "delayed"
+                            ? "Needs 5 min"
+                            : alert.status}
                         </Badge>
 
                         {meta.priority === "high" && isPending && (
@@ -302,9 +326,27 @@ export default function ParkingAlertsPage() {
                         </span>
                       </div>
 
+                      {alert.custom_status_note && (
+                        <div className="text-xs font-mono text-emerald-400 bg-emerald-950/40 border border-emerald-800/50 px-2 py-1 rounded inline-block">
+                          Latest response: {alert.custom_status_note}
+                        </div>
+                      )}
+
                       {alert.custom_message && (
                         <div className="mt-2 rounded-lg border border-border bg-muted p-2.5 text-xs text-foreground italic">
                           &ldquo;{alert.custom_message}&rdquo;
+                        </div>
+                      )}
+
+                      {alert.requester_phone && (
+                        <div className="mt-1 flex items-center gap-2 text-xs">
+                          <span className="text-muted-foreground">Requester contact:</span>
+                          <a
+                            href={`tel:${alert.requester_phone}`}
+                            className="text-emerald-400 underline font-mono hover:text-emerald-300"
+                          >
+                            {alert.requester_phone}
+                          </a>
                         </div>
                       )}
                     </div>
@@ -316,19 +358,43 @@ export default function ParkingAlertsPage() {
                       <Button
                         size="sm"
                         onClick={() => handleUpdateStatus(alert.id, "resolved")}
-                        className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs h-8 px-3"
+                        className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs h-8 px-3 w-full justify-center"
                       >
                         <Check className="h-3.5 w-3.5 mr-1" />
-                        Resolve
+                        Vehicle moved
+                      </Button>
+                    )}
+
+                    {alert.status !== "owner_responding" && alert.status !== "resolved" && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleUpdateStatus(alert.id, "owner_responding")}
+                        className="text-xs h-8 px-3 w-full justify-center border-emerald-800 text-emerald-400 hover:bg-emerald-950/30"
+                      >
+                        <Car className="h-3 w-3 mr-1" />
+                        I&apos;m coming
+                      </Button>
+                    )}
+
+                    {alert.status !== "delayed" && alert.status !== "resolved" && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleUpdateStatus(alert.id, "delayed")}
+                        className="text-xs h-8 px-3 w-full justify-center border-amber-800 text-amber-400 hover:bg-amber-950/30"
+                      >
+                        <Clock className="h-3 w-3 mr-1" />
+                        Need 5 min
                       </Button>
                     )}
 
                     {alert.status === "pending" && (
                       <Button
-                        variant="outline"
+                        variant="ghost"
                         size="sm"
                         onClick={() => handleUpdateStatus(alert.id, "read")}
-                        className="text-xs h-8 px-3"
+                        className="text-xs h-8 px-3 w-full justify-center"
                       >
                         <Eye className="h-3.5 w-3.5 mr-1" />
                         Acknowledge
@@ -340,7 +406,7 @@ export default function ParkingAlertsPage() {
                         variant="ghost"
                         size="sm"
                         onClick={() => handleUpdateStatus(alert.id, "ignored")}
-                        className="text-xs h-8 px-2 text-muted-foreground hover:text-foreground"
+                        className="text-xs h-8 px-2 text-muted-foreground hover:text-foreground w-full justify-center"
                       >
                         Dismiss
                       </Button>

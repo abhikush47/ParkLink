@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClientServer } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/client";
 import { anonymousMessageSubmissionSchema } from "@/lib/validations";
+import { dispatchTelegramAnonymousMessage } from "@/lib/telegram";
 
 export async function POST(request: NextRequest) {
   try {
@@ -40,6 +41,13 @@ export async function POST(request: NextRequest) {
       if (!data.success) {
         const statusCode = data.error === "RATE_LIMITED" ? 429 : 400;
         return NextResponse.json(data, { status: statusCode });
+      }
+
+      // Dispatch Telegram Anonymous Message notification asynchronously
+      if (data.message_id) {
+        dispatchTelegramAnonymousMessage(data.message_id).catch((err) => {
+          console.error("[Telegram Anonymous Message Dispatch Error]", err);
+        });
       }
 
       return NextResponse.json(data, { status: 200 });

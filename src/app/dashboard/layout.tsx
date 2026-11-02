@@ -18,6 +18,7 @@ import {
   Shield,
   ChevronRight,
   User,
+  Send,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -31,6 +32,7 @@ const NAV_ITEMS = [
   { href: "/dashboard/qr", label: "QR Management", icon: QrCode },
   { href: "/dashboard/alerts", label: "Parking Alerts", icon: AlertTriangle },
   { href: "/dashboard/messages", label: "Messages Relay", icon: MessageSquare },
+  { href: "/dashboard/telegram", label: "Telegram Bot", icon: Send },
   { href: "/dashboard/notifications", label: "Notifications", icon: Bell },
   { href: "/dashboard/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/dashboard/settings", label: "Account Settings", icon: Settings },

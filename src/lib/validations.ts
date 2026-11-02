@@ -53,9 +53,25 @@ export const parkingAlertSubmissionSchema = z.object({
     "other",
   ]),
   custom_message: z.string().max(500, "Message cannot exceed 500 characters").optional().or(z.literal("")),
+  requester_phone: z
+    .string()
+    .regex(/^(\+?[0-9\s\-()]{7,20})?$/, "Invalid phone number format")
+    .optional()
+    .or(z.literal("")),
 });
 
 export type ParkingAlertSubmissionData = z.infer<typeof parkingAlertSubmissionSchema>;
+
+export const telegramPreferencesSchema = z.object({
+  telegram_enabled: z.boolean(),
+  parking_alerts_enabled: z.boolean(),
+  anonymous_messages_enabled: z.boolean(),
+  qr_scans_enabled: z.boolean(),
+  security_alerts_enabled: z.boolean(),
+  email_alerts: z.boolean().optional(),
+});
+
+export type TelegramPreferencesData = z.infer<typeof telegramPreferencesSchema>;
 
 export const anonymousMessageSubmissionSchema = z.object({
   token: z.string().min(6, "Invalid QR token").max(32),

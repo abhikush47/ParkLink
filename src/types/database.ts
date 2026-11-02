@@ -83,7 +83,14 @@ export type AlertCategory =
   | "parked_incorrectly"
   | "other";
 
-export type AlertStatus = "pending" | "read" | "resolved" | "ignored";
+export type AlertStatus =
+  | "pending"
+  | "read"
+  | "owner_responding"
+  | "delayed"
+  | "resolved"
+  | "ignored"
+  | "cancelled";
 
 export interface ParkingAlert {
   id: string;
@@ -92,6 +99,9 @@ export interface ParkingAlert {
   custom_message?: string | null;
   sender_hash: string;
   status: AlertStatus;
+  custom_status_note?: string | null;
+  owner_response_at?: string | null;
+  requester_phone?: string | null;
   created_at: string;
   resolved_at?: string | null;
   vehicle?: Vehicle;
@@ -172,8 +182,61 @@ export interface UserNotificationPreferences {
   email_alerts: boolean;
   browser_push: boolean;
   instant_scan_alerts: boolean;
+  telegram_enabled: boolean;
+  parking_alerts_enabled: boolean;
+  anonymous_messages_enabled: boolean;
+  qr_scans_enabled: boolean;
+  security_alerts_enabled: boolean;
   created_at: string;
   updated_at: string;
+}
+
+export type TelegramConnectionStatus = "connected" | "disconnected" | "suspended";
+
+export interface TelegramConnection {
+  id: string;
+  user_id: string;
+  telegram_chat_id: string;
+  telegram_user_id?: string | null;
+  telegram_username?: string | null;
+  first_name?: string | null;
+  last_name?: string | null;
+  connected_at: string;
+  status: TelegramConnectionStatus;
+  updated_at: string;
+  profile?: Profile;
+}
+
+export interface TelegramLinkToken {
+  id: string;
+  user_id: string;
+  token: string;
+  token_hash?: string | null;
+  expires_at: string;
+  used_at?: string | null;
+  created_at: string;
+}
+
+export type DeliveryChannel = "telegram" | "email" | "in_app" | "sms" | "whatsapp";
+export type DeliveryEventType =
+  | "parking_alert"
+  | "anonymous_message"
+  | "qr_scanned"
+  | "security"
+  | "test_notification";
+export type DeliveryStatus = "delivered" | "failed" | "skipped" | "pending";
+
+export interface NotificationDeliveryLog {
+  id: string;
+  notification_id?: string | null;
+  user_id: string;
+  channel: DeliveryChannel;
+  event_type: DeliveryEventType;
+  delivery_status: DeliveryStatus;
+  error_message?: string | null;
+  metadata?: Record<string, unknown> | null;
+  created_at: string;
+  profile?: Profile;
 }
 
 export interface PublicVehicleProfileResponse {

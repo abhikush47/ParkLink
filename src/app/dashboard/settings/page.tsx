@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { User, Phone, MessageSquare, Lock, Bell, Save, ShieldCheck } from "lucide-react";
+import Link from "next/link";
+import { User, Phone, MessageSquare, Lock, Bell, Save, ShieldCheck, Send, ExternalLink } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -278,6 +279,34 @@ export default function AccountSettingsPage() {
           </Button>
         </div>
       </form>
+
+      {/* Telegram Bot Integration Spotlight */}
+      <div className="rounded-xl border border-sky-500/30 bg-sky-500/5 p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <span className="p-1 rounded bg-sky-500/10 text-sky-400">
+              <Send className="h-4 w-4" />
+            </span>
+            <h2 className="text-sm font-semibold text-foreground">
+              Telegram bot gateway
+            </h2>
+            <span className="inline-flex items-center rounded-md bg-sky-500/10 px-2 py-0.5 text-[10px] font-mono text-sky-400 border border-sky-500/20">
+              Interactive
+            </span>
+          </div>
+          <p className="text-xs text-muted-foreground leading-relaxed max-w-xl">
+            Connect Telegram to receive instant lock-screen parking alerts and 1-tap response buttons without exposing your phone number.
+          </p>
+        </div>
+
+        <Link
+          href="/dashboard/telegram"
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-xs font-semibold shrink-0 shadow-sm transition-colors duration-150"
+        >
+          <span>Manage Telegram bot</span>
+          <ExternalLink className="h-3.5 w-3.5" />
+        </Link>
+      </div>
 
       {/* Notification Preferences */}
       <form
