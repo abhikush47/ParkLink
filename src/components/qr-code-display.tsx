@@ -62,12 +62,17 @@ export function QRCodeDisplay({
   const [isRotateModalOpen, setIsRotateModalOpen] = useState(false);
   const [isRotating, setIsRotating] = useState(false);
 
-  const publicUrl = getPublicVehicleUrl(token);
+  const [publicUrl, setPublicUrl] = useState<string>(() => getPublicVehicleUrl(token));
+
+  useEffect(() => {
+    setPublicUrl(getPublicVehicleUrl(token));
+  }, [token]);
 
   useEffect(() => {
     let isMounted = true;
     async function loadQR() {
       try {
+        if (!publicUrl) return;
         const darkColor =
           theme === "carbon" ? "#0f172a" : theme === "emerald" ? "#064e3b" : "#000000";
         const png = await generateQRCodePNG(publicUrl, {
@@ -311,6 +316,17 @@ export function QRCodeDisplay({
         <span>Total Scans: <strong className="text-foreground">{scanCount}</strong></span>
         <span>•</span>
         <span>Last Scanned: <strong className="text-foreground">{lastScannedAt ? "Active recently" : "Never"}</strong></span>
+      </div>
+
+      {/* Dynamic Target Domain Indicator */}
+      <div className="w-full flex items-center justify-between text-[11px] text-muted-foreground px-1">
+        <span className="font-semibold text-foreground flex items-center gap-1.5">
+          <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
+          <span>Permanent Dynamic QR Target</span>
+        </span>
+        <span className="font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full font-semibold">
+          Live Domain
+        </span>
       </div>
 
       {/* Permanent URL Bar */}

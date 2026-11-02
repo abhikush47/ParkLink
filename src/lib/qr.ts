@@ -24,12 +24,34 @@ export function generateSecureToken(length = 10): string {
 }
 
 /**
+ * Resolves the application base URL dynamically.
+ * Priority:
+ * 1. window.location.origin in browser (always matches the real domain, whether Vercel production or local)
+ * 2. NEXT_PUBLIC_APP_URL if set and not localhost
+ * 3. Vercel deployment URL
+ * 4. Default fallback: https://parklink-dusky.vercel.app
+ */
+export function getAppBaseUrl(): string {
+  if (typeof window !== "undefined" && window.location?.origin) {
+    return window.location.origin;
+  }
+  if (process.env.NEXT_PUBLIC_APP_URL && !process.env.NEXT_PUBLIC_APP_URL.includes("localhost")) {
+    return process.env.NEXT_PUBLIC_APP_URL;
+  }
+  if (process.env.NEXT_PUBLIC_VERCEL_URL) {
+    return `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`;
+  }
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+  return process.env.NEXT_PUBLIC_APP_URL || "https://parklink-dusky.vercel.app";
+}
+
+/**
  * Returns the permanent public URL for a vehicle QR code.
  */
 export function getPublicVehicleUrl(token: string): string {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://parklink.app";
-  // Remove trailing slash if present
-  const cleanBase = baseUrl.replace(/\/$/, "");
+  const cleanBase = getAppBaseUrl().replace(/\/$/, "");
   return `${cleanBase}/v/${token}`;
 }
 
