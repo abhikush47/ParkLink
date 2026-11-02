@@ -90,3 +90,4 @@ CREATE POLICY "Users manage own link tokens" ON public.telegram_link_tokens
 -- 9. RLS POLICIES FOR NOTIFICATION DELIVERY LOGS
 CREATE POLICY "Users view own delivery logs" ON public.notification_delivery_logs
     FOR SELECT USING (auth.uid() = user_id OR public.is_admin());
+
