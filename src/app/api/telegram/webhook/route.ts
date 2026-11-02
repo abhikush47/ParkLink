@@ -31,13 +31,16 @@ export async function POST(request: NextRequest) {
     // 3. Handle Messages (e.g. /start <token>, /help, /status)
     if (update.message) {
       const msg = update.message;
+      if (!msg.chat || !msg.chat.id) {
+        return NextResponse.json({ ok: true });
+      }
       const text = (msg.text || "").trim();
       const chatId = msg.chat.id;
-      const tgUser = msg.from;
+      const tgUser = msg.from || { id: chatId, first_name: "Owner" };
 
       // Handle /start command
       if (text.startsWith("/start")) {
-        const parts = text.split(" ");
+        const parts = text.split(/\s+/);
         const startPayload = parts[1]?.trim();
 
         if (startPayload) {

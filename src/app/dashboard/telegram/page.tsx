@@ -20,6 +20,7 @@ import {
   Clock,
   Sparkles,
   Globe,
+  Copy,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -58,6 +59,8 @@ export default function TelegramIntegrationPage() {
   // Deep Link Generation State
   const [generatingLink, setGeneratingLink] = useState(false);
   const [deepLink, setDeepLink] = useState<string | null>(null);
+  const [linkToken, setLinkToken] = useState<string | null>(null);
+  const [copiedCommand, setCopiedCommand] = useState(false);
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
   const [linkExpiresAt, setLinkExpiresAt] = useState<string | null>(null);
 
@@ -127,6 +130,7 @@ export default function TelegramIntegrationPage() {
       }
 
       setDeepLink(data.deepLink);
+      setLinkToken(data.token);
       setLinkExpiresAt(data.expiresAt);
 
       // Generate QR Code for mobile scanning
@@ -144,6 +148,15 @@ export default function TelegramIntegrationPage() {
     } finally {
       setGeneratingLink(false);
     }
+  };
+
+  const handleCopyCommand = () => {
+    if (!linkToken) return;
+    const cmd = `/start ${linkToken}`;
+    navigator.clipboard.writeText(cmd);
+    setCopiedCommand(true);
+    toast.success("Command copied: " + cmd);
+    setTimeout(() => setCopiedCommand(false), 2500);
   };
 
   // Disconnect Telegram
@@ -405,6 +418,33 @@ export default function TelegramIntegrationPage() {
                               <span>Open in Telegram (@{statusData?.botUsername || "ParkLinkAlertBot"})</span>
                               <ExternalLink className="h-3.5 w-3.5 opacity-70" />
                             </a>
+
+                            {linkToken && (
+                              <div className="pt-2 text-left space-y-1">
+                                <div className="text-[11px] text-muted-foreground">
+                                  Or paste this command directly into the chat:
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <code className="text-xs font-mono text-sky-400 bg-slate-900 px-2 py-1.5 rounded-lg border border-slate-800 flex-1 truncate select-all">
+                                    /start {linkToken}
+                                  </code>
+                                  <Button
+                                    type="button"
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={handleCopyCommand}
+                                    className="h-8 px-2.5 text-xs border-border shrink-0"
+                                  >
+                                    {copiedCommand ? (
+                                      <Check className="h-3.5 w-3.5 text-emerald-400 mr-1" />
+                                    ) : (
+                                      <Copy className="h-3.5 w-3.5 mr-1" />
+                                    )}
+                                    <span>{copiedCommand ? "Copied" : "Copy"}</span>
+                                  </Button>
+                                </div>
+                              </div>
+                            )}
                           </div>
                         </div>
 
