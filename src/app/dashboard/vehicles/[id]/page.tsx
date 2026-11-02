@@ -239,35 +239,92 @@ export default function VehicleDetailPage() {
       </div>
 
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-border">
-        <div>
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold tracking-tight text-foreground">
+      <div className="relative overflow-hidden rounded-3xl border border-emerald-500/20 bg-gradient-to-br from-emerald-950/40 via-card to-card p-6 md:p-8 backdrop-blur-xl">
+        <div className="absolute -right-16 -top-16 h-64 w-64 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          <div className="space-y-3">
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="relative inline-flex items-center rounded-xl border border-slate-700 bg-slate-900/90 px-3 py-1.5 shadow-inner">
+                <div className="flex items-center gap-2">
+                  <div className="flex flex-col items-center justify-center bg-blue-700 text-white text-[8px] font-bold px-1 py-0.5 rounded leading-tight">
+                    <span>IND</span>
+                  </div>
+                  <span className="font-mono text-base font-extrabold tracking-wider text-slate-100 uppercase">
+                    {vehicle.registration_number}
+                  </span>
+                </div>
+              </div>
+
+              <Badge
+                variant={status === "active" ? "success" : "secondary"}
+                className="text-xs font-mono capitalize"
+              >
+                {status}
+              </Badge>
+
+              <span className="text-xs text-muted-foreground font-mono">
+                {vehicleType} • {color}
+              </span>
+            </div>
+
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
               {brand} {model}
             </h1>
-            <Badge variant={status === "active" ? "success" : "secondary"}>{status}</Badge>
+            <p className="text-xs sm:text-sm text-muted-foreground max-w-xl">
+              Configure telemetry, driver contact permissions, and emergency parking alert responders.
+            </p>
           </div>
-          <p className="text-xs text-muted-foreground font-mono mt-0.5">
-            {vehicle.registration_number} • {vehicleType}
-          </p>
+
+          <div className="flex items-center gap-3">
+            {qrCode && (
+              <Link href={`/v/${qrCode.token}`} target="_blank">
+                <Button variant="outline" className="text-xs font-semibold rounded-xl border-border/80 hover:bg-muted">
+                  <ExternalLink className="mr-1.5 h-3.5 w-3.5 text-emerald-400" /> Public Pass
+                </Button>
+              </Link>
+            )}
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() => setDeleteModalOpen(true)}
+              className="h-10 px-3 rounded-xl bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/30"
+              title="Delete Vehicle"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Live Public Simulator Pill Bar */}
+      <div className="rounded-2xl border border-border bg-card p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-2 text-xs">
+          <Eye className="h-4 w-4 text-emerald-400 shrink-0" />
+          <span className="font-semibold text-foreground">Active Public Scanner View:</span>
+          <span className="text-muted-foreground">What a stranger sees right now when scanning:</span>
         </div>
 
-        <div className="flex items-center gap-2">
-          {qrCode && (
-            <Link href={`/v/${qrCode.token}`} target="_blank">
-              <Button variant="outline" size="sm" className="text-xs">
-                <ExternalLink className="mr-1.5 h-3.5 w-3.5" /> Preview Public Profile
-              </Button>
-            </Link>
+        <div className="flex flex-wrap items-center gap-2">
+          {tempPrivacy ? (
+            <Badge variant="destructive" className="text-[10px]">
+              🔒 Emergency Privacy Active (All Contacts Muted)
+            </Badge>
+          ) : (
+            <>
+              <Badge variant={showPhone ? "success" : "secondary"} className="text-[10px]">
+                {showPhone ? "✓ Direct Call" : "✕ Call Hidden"}
+              </Badge>
+              <Badge variant={showWhatsApp ? "success" : "secondary"} className="text-[10px]">
+                {showWhatsApp ? "✓ WhatsApp" : "✕ WhatsApp Hidden"}
+              </Badge>
+              <Badge variant={enableAlerts ? "success" : "secondary"} className="text-[10px]">
+                {enableAlerts ? "✓ 1-Tap Alerts" : "✕ Alerts Off"}
+              </Badge>
+              <Badge variant={enableAnonMsg ? "success" : "secondary"} className="text-[10px]">
+                {enableAnonMsg ? "✓ Masked Chat" : "✕ Chat Off"}
+              </Badge>
+            </>
           )}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setDeleteModalOpen(true)}
-            className="text-destructive hover:bg-destructive/10 text-xs"
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
         </div>
       </div>
 

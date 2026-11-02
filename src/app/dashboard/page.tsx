@@ -14,6 +14,10 @@ import {
   CheckCircle2,
   Clock,
   ExternalLink,
+  Zap,
+  TrendingUp,
+  MapPin,
+  Check,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -51,7 +55,6 @@ export default function DashboardOverviewPage() {
           if (isMounted && userVehicles) {
             setVehicles(userVehicles);
 
-            // Calculate total scans across user's vehicles
             const vehicleIds = userVehicles.map((v) => v.id);
             if (vehicleIds.length > 0) {
               const { data: qrData } = await supabase
@@ -62,7 +65,7 @@ export default function DashboardOverviewPage() {
               const scans = qrData?.reduce((acc, curr) => acc + (curr.scan_count || 0), 0) || 0;
               setTotalScans(scans);
 
-              // 2. Fetch recent alerts for user's vehicles
+              // 2. Fetch recent alerts
               const { data: recentAlerts } = await supabase
                 .from("parking_alerts")
                 .select("*, vehicle:vehicles(*)")
@@ -110,14 +113,14 @@ export default function DashboardOverviewPage() {
           <Skeleton className="h-9 w-32" />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Skeleton className="h-28 rounded-xl" />
-          <Skeleton className="h-28 rounded-xl" />
-          <Skeleton className="h-28 rounded-xl" />
-          <Skeleton className="h-28 rounded-xl" />
+          <Skeleton className="h-32 rounded-2xl" />
+          <Skeleton className="h-32 rounded-2xl" />
+          <Skeleton className="h-32 rounded-2xl" />
+          <Skeleton className="h-32 rounded-2xl" />
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Skeleton className="h-64 rounded-xl" />
-          <Skeleton className="h-64 rounded-xl" />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <Skeleton className="lg:col-span-7 h-80 rounded-2xl" />
+          <Skeleton className="lg:col-span-5 h-80 rounded-2xl" />
         </div>
       </div>
     );
@@ -125,142 +128,168 @@ export default function DashboardOverviewPage() {
 
   return (
     <div className="space-y-8">
-      {/* Title & Quick Add */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      {/* Top Banner & Quick Add */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-border">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">
-            Dashboard Overview
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-[11px] font-semibold text-emerald-800 dark:text-emerald-300 mb-1.5">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span>Active Cloud Sync</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
+            Vehicle Command Center
           </h1>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Realtime vehicle status, QR interactions, and parking assistance requests.
+            Live fleet status, physical QR interaction telemetry, and parking assistance dispatch.
           </p>
         </div>
-        <Link href="/dashboard/vehicles/new">
-          <Button className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs h-9 font-semibold">
-            <Plus className="mr-1.5 h-4 w-4" /> Register New Vehicle
-          </Button>
-        </Link>
+
+        <div className="flex items-center gap-2">
+          <Link href="/dashboard/qr">
+            <Button variant="outline" size="sm" className="text-xs h-9">
+              <QrCode className="mr-1.5 h-4 w-4 text-emerald-600" /> Print Stickers
+            </Button>
+          </Link>
+          <Link href="/dashboard/vehicles/new">
+            <Button className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs h-9 font-semibold shadow-md shadow-emerald-600/20">
+              <Plus className="mr-1.5 h-4 w-4" /> Register Vehicle
+            </Button>
+          </Link>
+        </div>
       </div>
 
-      {/* Overview Metric Cards */}
+      {/* KPI Stat Cards with Refined Hierarchy */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Card 1: Registered Vehicles */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              Total Vehicles
-            </CardTitle>
-            <Car className="h-4 w-4 text-emerald-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">{vehicles.length}</div>
-            <p className="text-[11px] text-muted-foreground mt-1">
-              <span className="text-emerald-600 font-semibold">{activeVehicles} active</span> in
-              circulation
-            </p>
-          </CardContent>
-        </Card>
+        {/* Card 1: Registered Fleet */}
+        <div className="bg-card border border-border/80 rounded-2xl p-5 space-y-3 shadow-sm hover:border-emerald-500/40 transition-all">
+          <div className="flex items-center justify-between text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            <span>Registered Fleet</span>
+            <span className="p-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600">
+              <Car className="h-4 w-4" />
+            </span>
+          </div>
+          <div className="space-y-1">
+            <div className="text-3xl font-black text-foreground">{vehicles.length}</div>
+            <div className="flex items-center gap-1.5 text-xs text-emerald-600 font-medium">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+              <span>{activeVehicles} active in circulation</span>
+            </div>
+          </div>
+        </div>
 
-        {/* Card 2: Total QR Scans */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              Total Scans
-            </CardTitle>
-            <Eye className="h-4 w-4 text-emerald-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">{totalScans}</div>
-            <p className="text-[11px] text-muted-foreground mt-1">
-              Live QR profile views logged
-            </p>
-          </CardContent>
-        </Card>
+        {/* Card 2: Total Scans */}
+        <div className="bg-card border border-border/80 rounded-2xl p-5 space-y-3 shadow-sm hover:border-emerald-500/40 transition-all">
+          <div className="flex items-center justify-between text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            <span>Total QR Views</span>
+            <span className="p-2 rounded-xl bg-sky-50 dark:bg-sky-950/60 text-sky-600">
+              <Eye className="h-4 w-4" />
+            </span>
+          </div>
+          <div className="space-y-1">
+            <div className="text-3xl font-black text-foreground">{totalScans}</div>
+            <div className="flex items-center gap-1 text-xs text-muted-foreground">
+              <TrendingUp className="h-3.5 w-3.5 text-sky-500" />
+              <span>Live visitor lookups logged</span>
+            </div>
+          </div>
+        </div>
 
         {/* Card 3: Parking Alerts */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              Parking Alerts
-            </CardTitle>
-            <AlertTriangle className="h-4 w-4 text-amber-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">{alerts.length}</div>
-            <p className="text-[11px] text-muted-foreground mt-1">
+        <div className="bg-card border border-border/80 rounded-2xl p-5 space-y-3 shadow-sm hover:border-amber-500/40 transition-all">
+          <div className="flex items-center justify-between text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            <span>Parking Alerts</span>
+            <span className="p-2 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600">
+              <AlertTriangle className="h-4 w-4" />
+            </span>
+          </div>
+          <div className="space-y-1">
+            <div className="text-3xl font-black text-foreground">{alerts.length}</div>
+            <div className="text-xs">
               {pendingAlerts > 0 ? (
-                <span className="text-amber-600 font-semibold">{pendingAlerts} require action</span>
+                <span className="text-amber-600 font-semibold flex items-center gap-1">
+                  <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse" />
+                  {pendingAlerts} require action
+                </span>
               ) : (
-                "All issues resolved"
+                <span className="text-emerald-600 font-medium flex items-center gap-1">
+                  <Check className="h-3.5 w-3.5" /> All spots clear
+                </span>
               )}
-            </p>
-          </CardContent>
-        </Card>
+            </div>
+          </div>
+        </div>
 
         {/* Card 4: Unread Notifications */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              Activity Alerts
-            </CardTitle>
-            <Bell className="h-4 w-4 text-emerald-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">
+        <div className="bg-card border border-border/80 rounded-2xl p-5 space-y-3 shadow-sm hover:border-purple-500/40 transition-all">
+          <div className="flex items-center justify-between text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            <span>Push Notifications</span>
+            <span className="p-2 rounded-xl bg-purple-50 dark:bg-purple-950/60 text-purple-600">
+              <Bell className="h-4 w-4" />
+            </span>
+          </div>
+          <div className="space-y-1">
+            <div className="text-3xl font-black text-foreground">
               {notifications.filter((n) => !n.is_read).length}
             </div>
-            <p className="text-[11px] text-muted-foreground mt-1">Unread push notifications</p>
-          </CardContent>
-        </Card>
+            <div className="text-xs text-muted-foreground">
+              <span>Realtime event dispatch</span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Main Content Grid: Vehicles + Recent Alerts */}
+      {/* Main Grid: Fleet Cards on Left, Recent Alerts Feed on Right */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Left Column: My Vehicles Summary */}
+        {/* Left Column: My Registered Fleet */}
         <div className="lg:col-span-7 space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-base font-bold text-foreground">My Vehicles</h2>
+            <h2 className="text-base font-bold text-foreground">Active Vehicle Fleet</h2>
             <Link
               href="/dashboard/vehicles"
               className="text-xs text-emerald-600 hover:underline flex items-center gap-1 font-semibold"
             >
-              View all <ArrowRight className="h-3 w-3" />
+              Manage all ({vehicles.length}) <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </div>
 
           {vehicles.length === 0 ? (
-            <div className="bg-card border border-border border-dashed rounded-2xl p-8 text-center space-y-3">
-              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60">
-                <Car className="h-6 w-6" />
+            <div className="bg-card border border-border/80 border-dashed rounded-3xl p-10 text-center space-y-3">
+              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600">
+                <Car className="h-7 w-7" />
               </div>
               <h3 className="text-sm font-bold text-foreground">No vehicles registered yet</h3>
-              <p className="text-xs text-muted-foreground max-w-sm mx-auto">
-                Add your car, scooter, or bike to generate your unique dynamic QR code sticker.
+              <p className="text-xs text-muted-foreground max-w-sm mx-auto leading-relaxed">
+                Add your car, scooter, or motorcycle to generate a permanent dynamic QR code sticker.
               </p>
               <Link href="/dashboard/vehicles/new">
                 <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs mt-2">
-                  Register Your First Vehicle
+                  <Plus className="mr-1 h-3.5 w-3.5" /> Register Your First Vehicle
                 </Button>
               </Link>
             </div>
           ) : (
             <div className="space-y-3">
-              {vehicles.slice(0, 3).map((vehicle) => (
+              {vehicles.slice(0, 4).map((vehicle) => (
                 <div
                   key={vehicle.id}
-                  className="bg-card border border-border rounded-xl p-4 flex items-center justify-between hover:border-emerald-500/50 transition-all shadow-sm"
+                  className="bg-card border border-border/80 rounded-2xl p-4 flex items-center justify-between hover:border-emerald-500/40 transition-all shadow-sm group"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-foreground font-bold">
+                  <div className="flex items-center gap-3.5">
+                    <div className="h-11 w-11 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-foreground font-bold shadow-inner group-hover:scale-105 transition-transform">
                       <Car className="h-5 w-5 text-emerald-600" />
                     </div>
                     <div>
                       <div className="text-sm font-bold text-foreground">
                         {vehicle.brand} {vehicle.model}
                       </div>
-                      <div className="text-xs text-muted-foreground font-mono">
-                        {vehicle.registration_number} • {vehicle.color}
+                      <div className="text-xs font-mono font-bold text-emerald-700 dark:text-emerald-400">
+                        {vehicle.registration_number} • <span className="text-muted-foreground font-normal">{vehicle.color}</span>
                       </div>
+                      {vehicle.parking_location && (
+                        <div className="text-[11px] text-muted-foreground flex items-center gap-1 mt-0.5">
+                          <MapPin className="h-3 w-3 text-slate-400" />
+                          <span>{vehicle.parking_location}</span>
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -272,8 +301,8 @@ export default function DashboardOverviewPage() {
                       {vehicle.status}
                     </Badge>
                     <Link href={`/dashboard/vehicles/${vehicle.id}`}>
-                      <Button variant="ghost" size="sm" className="text-xs h-8">
-                        Manage
+                      <Button variant="outline" size="sm" className="text-xs h-8">
+                        Configure
                       </Button>
                     </Link>
                   </div>
@@ -283,7 +312,7 @@ export default function DashboardOverviewPage() {
           )}
         </div>
 
-        {/* Right Column: Recent Parking Alerts */}
+        {/* Right Column: Live Parking Alert Dispatch */}
         <div className="lg:col-span-5 space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-base font-bold text-foreground">Recent Parking Alerts</h2>
@@ -291,18 +320,18 @@ export default function DashboardOverviewPage() {
               href="/dashboard/alerts"
               className="text-xs text-emerald-600 hover:underline flex items-center gap-1 font-semibold"
             >
-              See all <ArrowRight className="h-3 w-3" />
+              Alerts centre <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </div>
 
           {alerts.length === 0 ? (
-            <div className="bg-card border border-border rounded-2xl p-8 text-center space-y-2">
-              <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-emerald-600 mb-2">
-                <ShieldCheck className="h-5 w-5" />
+            <div className="bg-card border border-border/80 rounded-3xl p-8 text-center space-y-2">
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 mb-2">
+                <ShieldCheck className="h-6 w-6" />
               </div>
-              <p className="text-xs font-semibold text-foreground">No parking alerts</p>
-              <p className="text-[11px] text-muted-foreground">
-                Your vehicles are parked clear. Any alerts sent by scanners will appear here.
+              <p className="text-xs font-bold text-foreground">No Active Parking Alerts</p>
+              <p className="text-[11px] text-muted-foreground max-w-xs mx-auto leading-relaxed">
+                Your vehicles have no reported issues. Alerts sent by passersby will appear here in real time.
               </p>
             </div>
           ) : (
@@ -310,25 +339,32 @@ export default function DashboardOverviewPage() {
               {alerts.map((alert) => (
                 <div
                   key={alert.id}
-                  className="bg-card border border-border rounded-xl p-3.5 space-y-2 shadow-sm"
+                  className="bg-card border border-border/80 rounded-2xl p-4 space-y-2.5 shadow-sm"
                 >
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-foreground flex items-center gap-1.5">
                       <AlertTriangle className="h-3.5 w-3.5 text-amber-500" />
                       {alert.category.replace(/_/g, " ").toUpperCase()}
                     </span>
-                    <span className="text-[10px] text-muted-foreground">
+                    <span className="text-[10px] text-muted-foreground font-mono">
                       {formatTimeAgo(alert.created_at)}
                     </span>
                   </div>
+
                   {alert.custom_message && (
-                    <p className="text-xs text-muted-foreground italic">
+                    <div className="bg-muted/40 p-2.5 rounded-xl border border-border text-xs text-foreground italic">
                       &ldquo;{alert.custom_message}&rdquo;
-                    </p>
+                    </div>
                   )}
+
                   <div className="flex items-center justify-between text-[11px] pt-1 border-t border-border/50 text-muted-foreground">
-                    <span>Vehicle: {alert.vehicle?.registration_number || "Car"}</span>
-                    <Badge variant={alert.status === "resolved" ? "success" : "warning"} className="text-[10px]">
+                    <span className="font-mono font-bold text-foreground">
+                      {alert.vehicle?.registration_number || "Car"}
+                    </span>
+                    <Badge
+                      variant={alert.status === "resolved" ? "success" : "warning"}
+                      className="text-[10px]"
+                    >
                       {alert.status}
                     </Badge>
                   </div>
@@ -341,4 +377,3 @@ export default function DashboardOverviewPage() {
     </div>
   );
 }
-

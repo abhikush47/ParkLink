@@ -18,7 +18,8 @@ import {
   ChevronRight,
   Info,
   Clock,
-  CheckCircle,
+  Sparkles,
+  Zap,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -56,7 +57,6 @@ export default function PublicVehicleProfilePage() {
           if (res.ok && data.success) {
             setProfile(data);
           } else {
-            // If token not found in database or DB not yet connected, check if it's a demo or invalid
             setError(data.message || "Invalid or inactive vehicle QR code.");
             setProfile(data);
           }
@@ -81,33 +81,32 @@ export default function PublicVehicleProfilePage() {
     switch (type) {
       case "Motorcycle":
       case "Scooter":
-        return <Bike className="h-6 w-6 text-emerald-600" />;
+        return <Bike className="h-6 w-6 text-white" />;
       case "Truck":
       case "Van":
-        return <Truck className="h-6 w-6 text-emerald-600" />;
+        return <Truck className="h-6 w-6 text-white" />;
       case "Car":
       case "SUV":
       default:
-        return <Car className="h-6 w-6 text-emerald-600" />;
+        return <Car className="h-6 w-6 text-white" />;
     }
   };
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-4">
-        <div className="w-full max-w-md bg-card border border-border rounded-2xl p-6 shadow-sm space-y-6">
+      <main className="min-h-screen bg-slate-900 flex flex-col items-center justify-center p-4">
+        <div className="w-full max-w-md bg-slate-950 border border-slate-800 rounded-3xl p-6 shadow-2xl space-y-6">
           <div className="flex items-center space-x-3">
-            <Skeleton className="h-12 w-12 rounded-full" />
+            <Skeleton className="h-12 w-12 rounded-2xl bg-slate-800" />
             <div className="space-y-2 flex-1">
-              <Skeleton className="h-6 w-3/4" />
-              <Skeleton className="h-4 w-1/2" />
+              <Skeleton className="h-5 w-3/4 bg-slate-800" />
+              <Skeleton className="h-3.5 w-1/2 bg-slate-800" />
             </div>
           </div>
-          <Skeleton className="h-40 w-full rounded-xl" />
+          <Skeleton className="h-44 w-full rounded-2xl bg-slate-800" />
           <div className="space-y-3">
-            <Skeleton className="h-12 w-full rounded-lg" />
-            <Skeleton className="h-12 w-full rounded-lg" />
-            <Skeleton className="h-12 w-full rounded-lg" />
+            <Skeleton className="h-12 w-full rounded-xl bg-slate-800" />
+            <Skeleton className="h-12 w-full rounded-xl bg-slate-800" />
           </div>
         </div>
       </main>
@@ -118,22 +117,24 @@ export default function PublicVehicleProfilePage() {
   if (error || !profile || !profile.success) {
     const isSuspended = profile?.status === "suspended";
     return (
-      <main className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-4">
-        <div className="w-full max-w-md bg-card border border-border rounded-2xl p-8 shadow-sm text-center">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-rose-50 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400 mb-4">
+      <main className="min-h-screen bg-slate-900 flex flex-col items-center justify-center p-4">
+        <div className="w-full max-w-md bg-slate-950 border border-slate-800 rounded-3xl p-8 shadow-2xl text-center space-y-5">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-rose-950/60 text-rose-500 border border-rose-800/40">
             <AlertTriangle className="h-8 w-8" />
           </div>
-          <h2 className="text-xl font-bold text-foreground">
-            {isSuspended ? "Vehicle Profile Suspended" : "QR Code Not Found"}
-          </h2>
-          <p className="text-sm text-muted-foreground mt-2">
-            {error ||
-              "The scanned QR code is either unassigned, deactivated, or expired. Please check with the vehicle owner."}
-          </p>
+          <div>
+            <h2 className="text-xl font-bold text-white">
+              {isSuspended ? "Vehicle Profile Suspended" : "QR Sticker Inactive"}
+            </h2>
+            <p className="text-xs text-slate-400 mt-2 leading-relaxed">
+              {error ||
+                "This QR sticker has either been rotated, deactivated, or expired. Please check with the vehicle owner."}
+            </p>
+          </div>
 
-          <div className="mt-8 pt-6 border-t border-border flex flex-col gap-2">
-            <Link href="/">
-              <Button variant="outline" className="w-full">
+          <div className="pt-4 border-t border-slate-800 space-y-2">
+            <Link href="/" className="block w-full">
+              <Button variant="outline" className="w-full border-slate-700 text-slate-300 text-xs">
                 Visit ParkLink Home
               </Button>
             </Link>
@@ -141,9 +142,9 @@ export default function PublicVehicleProfilePage() {
               variant="ghost"
               size="sm"
               onClick={() => setReportModalOpen(true)}
-              className="text-muted-foreground text-xs"
+              className="text-slate-500 hover:text-slate-300 text-xs"
             >
-              <Flag className="mr-1.5 h-3.5 w-3.5" /> Report Problem with this QR
+              <Flag className="mr-1.5 h-3.5 w-3.5" /> Report Misplaced or Fake Sticker
             </Button>
           </div>
         </div>
@@ -177,52 +178,75 @@ export default function PublicVehicleProfilePage() {
   const allowParkingAlerts = privacy?.allow_parking_alerts;
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-slate-100 to-slate-200 dark:from-slate-950 dark:to-slate-900 flex flex-col items-center justify-start py-6 px-4 sm:px-6">
-      <div className="w-full max-w-md space-y-4">
-        {/* Brand Header */}
+    <main className="min-h-screen bg-slate-900 text-slate-100 flex flex-col items-center justify-start py-8 px-4 sm:px-6 relative overflow-hidden">
+      {/* Background radial glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-emerald-500/10 rounded-full blur-[100px] pointer-events-none" />
+
+      <div className="w-full max-w-md space-y-4 relative z-10">
+        {/* Top Header Bar */}
         <header className="flex items-center justify-between px-2">
           <Link href="/" className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg bg-emerald-600 flex items-center justify-center text-white font-black text-base shadow-sm">
+            <div className="h-8 w-8 rounded-xl bg-emerald-600 flex items-center justify-center text-white font-black text-sm shadow-md">
               P
             </div>
             <div>
-              <span className="font-bold text-foreground tracking-tight text-base">ParkLink</span>
-              <span className="text-[10px] block text-muted-foreground -mt-1 font-medium">
+              <span className="font-bold text-white tracking-tight text-sm">ParkLink</span>
+              <span className="text-[10px] block text-slate-400 -mt-0.5 font-medium">
                 Verified Vehicle Profile
               </span>
             </div>
           </Link>
-          <div className="flex items-center gap-1.5 text-xs text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/50 px-2.5 py-1 rounded-full font-medium">
+          <div className="flex items-center gap-1.5 text-[11px] text-emerald-400 bg-emerald-950/60 border border-emerald-800/60 px-2.5 py-1 rounded-full font-medium">
             <ShieldCheck className="h-3.5 w-3.5" />
-            <span>Secure Relay</span>
+            <span>Encrypted Relay</span>
           </div>
         </header>
 
-        {/* Main Vehicle Profile Card */}
-        <div className="bg-card border border-border rounded-2xl shadow-lg overflow-hidden transition-all">
-          {/* Top Vehicle Header */}
-          <div className="bg-gradient-to-r from-emerald-600 to-emerald-700 p-5 text-white">
+        {/* Digital Vehicle Security Pass Card */}
+        <div className="bg-slate-950 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden">
+          {/* Card Banner with Vehicle Type & Active Radar */}
+          <div className="bg-gradient-to-r from-emerald-700 via-emerald-600 to-teal-700 p-5 text-white relative">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="p-2 rounded-xl bg-white/10 backdrop-blur-sm text-white">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-2xl bg-white/10 backdrop-blur-md shadow-inner">
                   {getVehicleIcon(vehicle_type)}
-                </span>
+                </div>
                 <div>
-                  <div className="text-xs uppercase tracking-wider text-emerald-100 font-semibold">
+                  <div className="text-[11px] uppercase tracking-wider text-emerald-100 font-bold">
                     {vehicle_type} • {color}
                   </div>
                   <h1 className="text-xl font-black tracking-tight">{brand} {model}</h1>
                 </div>
               </div>
-              <Badge variant="charcoal" className="bg-white/20 text-white border-0 text-xs uppercase font-mono">
-                {registration_number}
-              </Badge>
+
+              {/* Status pill with animated radar */}
+              <div className="flex items-center gap-1.5 bg-black/30 backdrop-blur-md px-2.5 py-1 rounded-full text-xs font-semibold text-emerald-300 border border-white/10">
+                <span className="h-2 w-2 rounded-full bg-emerald-400 animate-radar" />
+                <span>Active</span>
+              </div>
             </div>
           </div>
 
-          {/* Optional Vehicle Image */}
+          {/* Realistic License Plate Badge */}
+          <div className="p-5 pb-3">
+            <div className="bg-gradient-to-b from-slate-100 to-slate-200 border-2 border-slate-400 rounded-xl p-3 text-slate-900 shadow-md flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="bg-blue-700 text-white rounded text-[9px] font-black px-1.5 py-1 text-center leading-none">
+                  IND
+                </div>
+                <div className="text-xl font-black font-plate tracking-widest uppercase">
+                  {registration_number}
+                </div>
+              </div>
+              <div className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">
+                PARKLINK VERIFIED
+              </div>
+            </div>
+          </div>
+
+          {/* Vehicle Photograph if provided */}
           {image_url && (
-            <div className="w-full h-48 bg-slate-100 dark:bg-slate-900 border-b border-border overflow-hidden relative">
+            <div className="mx-5 mb-3 rounded-2xl overflow-hidden h-44 bg-slate-900 border border-slate-800">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={image_url}
@@ -233,44 +257,46 @@ export default function PublicVehicleProfilePage() {
           )}
 
           {/* Details & Location */}
-          <div className="p-5 space-y-4">
+          <div className="px-5 space-y-3.5">
             {parking_location && (
-              <div className="flex items-start gap-2.5 text-xs text-muted-foreground bg-muted/40 p-3 rounded-xl border border-border">
-                <MapPin className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
+              <div className="flex items-start gap-2.5 text-xs text-slate-300 bg-slate-900/80 p-3 rounded-xl border border-slate-800">
+                <MapPin className="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" />
                 <div>
-                  <strong className="text-foreground block font-medium">Reported Parking Spot</strong>
+                  <strong className="text-white block font-semibold">Reported Parking Spot</strong>
                   {parking_location}
                 </div>
               </div>
             )}
 
             {description && (
-              <p className="text-xs text-muted-foreground leading-relaxed italic px-1">
+              <p className="text-xs text-slate-400 italic px-1 leading-relaxed">
                 &ldquo;{description}&rdquo;
               </p>
             )}
 
-            {/* Quick Instruction Banner */}
-            <div className="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/40 rounded-xl p-3 text-xs text-emerald-900 dark:text-emerald-200 flex items-start gap-2.5">
-              <Info className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
+            {/* Instruction Notice */}
+            <div className="bg-emerald-950/30 border border-emerald-800/40 rounded-xl p-3 text-xs text-emerald-200 flex items-start gap-2.5">
+              <Info className="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" />
               <div>
-                Need to reach the driver? Use one of the fast contact actions below. No app download needed.
+                Need to reach the driver? Tap an action below to notify them immediately.
               </div>
             </div>
 
-            {/* Action Buttons Group */}
+            {/* Tactile Action Cards Group */}
             <div className="space-y-2.5 pt-1">
               {/* Primary Action 1: Send Parking Alert */}
               {allowParkingAlerts ? (
                 <Button
                   size="lg"
                   onClick={() => setAlertModalOpen(true)}
-                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold shadow-md flex items-center justify-between px-5 h-12"
+                  className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold shadow-lg shadow-emerald-600/25 flex items-center justify-between px-5 h-13 rounded-2xl transition-all hover:scale-[1.01]"
                 >
                   <div className="flex items-center gap-3">
-                    <AlertTriangle className="h-5 w-5" />
+                    <div className="h-8 w-8 rounded-xl bg-white/20 flex items-center justify-center">
+                      <AlertTriangle className="h-4 w-4 text-white" />
+                    </div>
                     <div className="text-left">
-                      <div className="leading-tight">Send Parking Alert</div>
+                      <div className="text-sm leading-tight">Send Parking Alert</div>
                       <div className="text-[11px] font-normal text-emerald-100">
                         Car blocking, lights on, urgent move
                       </div>
@@ -279,42 +305,41 @@ export default function PublicVehicleProfilePage() {
                   <ChevronRight className="h-4 w-4 text-emerald-200" />
                 </Button>
               ) : (
-                <div className="text-xs text-center text-muted-foreground bg-muted/40 py-2.5 rounded-lg border border-border">
-                  Direct parking alerts are paused by owner
+                <div className="text-xs text-center text-slate-500 bg-slate-900/60 py-2.5 rounded-xl border border-slate-800">
+                  Direct parking alerts are currently paused by owner
                 </div>
               )}
 
-              {/* Action 2: Call Owner (if public phone enabled) */}
+              {/* Action 2: Call Owner (Direct Phone or Masked) */}
               {allowPhone ? (
-                <a
-                  href={formatTelLink(contact.phone!)}
-                  className="block w-full"
-                >
+                <a href={formatTelLink(contact.phone!)} className="block w-full">
                   <Button
                     variant="outline"
                     size="lg"
-                    className="w-full border-emerald-600/30 hover:bg-emerald-50 hover:text-emerald-700 dark:hover:bg-emerald-950/40 font-semibold flex items-center justify-between px-5 h-12"
+                    className="w-full border-slate-800 bg-slate-900/60 hover:bg-slate-800 text-white font-semibold flex items-center justify-between px-5 h-12 rounded-2xl transition-all"
                   >
                     <div className="flex items-center gap-3">
-                      <Phone className="h-5 w-5 text-emerald-600" />
+                      <div className="h-7 w-7 rounded-lg bg-emerald-950/80 text-emerald-400 flex items-center justify-center">
+                        <Phone className="h-4 w-4" />
+                      </div>
                       <div className="text-left">
-                        <div className="leading-tight">Call Vehicle Owner</div>
-                        <div className="text-[11px] font-normal text-muted-foreground">
-                          Direct phone connection
+                        <div className="text-xs leading-tight font-bold">Call Vehicle Owner</div>
+                        <div className="text-[10px] text-slate-400">
+                          Direct phone connection ({contact.owner_first_name || "Owner"})
                         </div>
                       </div>
                     </div>
-                    <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                    <ChevronRight className="h-4 w-4 text-slate-500" />
                   </Button>
                 </a>
               ) : (
-                <div className="text-xs text-muted-foreground flex items-center justify-center gap-1.5 py-1.5">
-                  <Lock className="h-3.5 w-3.5 text-muted-foreground/70" />
+                <div className="text-xs text-slate-500 flex items-center justify-center gap-1.5 py-1">
+                  <Lock className="h-3.5 w-3.5 text-slate-600" />
                   <span>Direct phone number hidden for privacy</span>
                 </div>
               )}
 
-              {/* Action 3: WhatsApp Owner (if WhatsApp enabled) */}
+              {/* Action 3: WhatsApp Owner */}
               {allowWhatsApp && (
                 <a
                   href={formatWhatsAppLink(contact.whatsapp!, {
@@ -329,18 +354,20 @@ export default function PublicVehicleProfilePage() {
                   <Button
                     variant="outline"
                     size="lg"
-                    className="w-full border-green-600/30 hover:bg-green-50 hover:text-green-700 dark:hover:bg-green-950/40 font-semibold flex items-center justify-between px-5 h-12"
+                    className="w-full border-slate-800 bg-slate-900/60 hover:bg-slate-800 text-white font-semibold flex items-center justify-between px-5 h-12 rounded-2xl transition-all"
                   >
                     <div className="flex items-center gap-3">
-                      <MessageCircle className="h-5 w-5 text-green-600" />
+                      <div className="h-7 w-7 rounded-lg bg-green-950/80 text-green-400 flex items-center justify-center">
+                        <MessageCircle className="h-4 w-4" />
+                      </div>
                       <div className="text-left">
-                        <div className="leading-tight">WhatsApp Driver</div>
-                        <div className="text-[11px] font-normal text-muted-foreground">
-                          Opens WhatsApp with pre-filled details
+                        <div className="text-xs leading-tight font-bold">WhatsApp Driver</div>
+                        <div className="text-[10px] text-slate-400">
+                          Pre-filled message with vehicle details
                         </div>
                       </div>
                     </div>
-                    <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                    <ChevronRight className="h-4 w-4 text-slate-500" />
                   </Button>
                 </a>
               )}
@@ -348,66 +375,53 @@ export default function PublicVehicleProfilePage() {
               {/* Action 4: Anonymous Contact Relay */}
               {allowAnonymousMessages && (
                 <Button
-                  variant="secondary"
+                  variant="outline"
                   size="lg"
                   onClick={() => setAnonMsgModalOpen(true)}
-                  className="w-full font-semibold flex items-center justify-between px-5 h-12"
+                  className="w-full border-slate-800 bg-slate-900/60 hover:bg-slate-800 text-white font-semibold flex items-center justify-between px-5 h-12 rounded-2xl transition-all"
                 >
                   <div className="flex items-center gap-3">
-                    <MessageSquare className="h-5 w-5 text-slate-700 dark:text-slate-300" />
+                    <div className="h-7 w-7 rounded-lg bg-sky-950/80 text-sky-400 flex items-center justify-center">
+                      <MessageSquare className="h-4 w-4" />
+                    </div>
                     <div className="text-left">
-                      <div className="leading-tight">Anonymous Message</div>
-                      <div className="text-[11px] font-normal text-muted-foreground">
-                        Keep your personal phone number confidential
+                      <div className="text-xs leading-tight font-bold">Anonymous Message Relay</div>
+                      <div className="text-[10px] text-slate-400">
+                        Zero phone number sharing required
                       </div>
                     </div>
                   </div>
-                  <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                  <ChevronRight className="h-4 w-4 text-slate-500" />
                 </Button>
               )}
             </div>
 
-            {/* Privacy & Anti-Harassment Assurance */}
-            <div className="pt-2 text-center">
-              <div className="flex items-center justify-center gap-1 text-[11px] text-muted-foreground">
-                <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
-                <span>ParkLink protects owner and visitor privacy alike.</span>
+            {/* Privacy Assurance */}
+            <div className="pt-2 pb-4 text-center">
+              <div className="flex items-center justify-center gap-1.5 text-[11px] text-slate-400">
+                <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
+                <span>Protected by ParkLink Privacy Architecture</span>
               </div>
             </div>
           </div>
 
-          {/* Footer Actions */}
-          <div className="bg-muted/40 p-4 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
+          {/* Footer Bar */}
+          <div className="bg-slate-900/80 px-5 py-3.5 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
             <button
               onClick={() => setReportModalOpen(true)}
-              className="flex items-center gap-1 hover:text-destructive transition-colors"
+              className="flex items-center gap-1.5 hover:text-rose-400 transition-colors"
             >
-              <Flag className="h-3.5 w-3.5" />
+              <Flag className="h-3.5 w-3.5 text-rose-500" />
               <span>Report issue</span>
             </button>
-            <Link href="/" className="hover:text-foreground transition-colors">
-              About ParkLink
+            <Link href="/" className="hover:text-white transition-colors">
+              Get Your Own ParkLink QR
             </Link>
           </div>
         </div>
-
-        {/* Promotion banner for visitors */}
-        <div className="bg-card border border-border rounded-xl p-4 text-center space-y-2 shadow-sm">
-          <h4 className="text-xs font-bold text-foreground uppercase tracking-wider">
-            Own a vehicle?
-          </h4>
-          <p className="text-xs text-muted-foreground">
-            Get your own free, permanent dynamic QR sticker. Never worry about blocked parking again.
-          </p>
-          <Link href="/register">
-            <Button variant="subtle" size="sm" className="mt-1 text-xs">
-              Get Your Free ParkLink QR
-            </Button>
-          </Link>
-        </div>
       </div>
 
-      {/* Interactive Modals */}
+      {/* Modals */}
       <ParkingAlertModal
         open={alertModalOpen}
         onOpenChange={setAlertModalOpen}
@@ -431,4 +445,3 @@ export default function PublicVehicleProfilePage() {
     </main>
   );
 }
-

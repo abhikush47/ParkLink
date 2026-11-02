@@ -9,6 +9,10 @@ import {
   ShieldCheck,
   Flag,
   Check,
+  Sparkles,
+  Lock,
+  Clock,
+  User,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -107,107 +111,150 @@ export default function MessagesRelayPage() {
     }
   };
 
+  const repliedCount = messages.filter((m) => m.status === "replied").length;
+  const pendingCount = messages.filter((m) => m.status !== "replied").length;
+
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-border">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">
-            Anonymous Contact Relay
-          </h1>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            Two-way privacy relay conversations with people who scanned your vehicles.
-          </p>
+    <div className="space-y-8 max-w-7xl mx-auto">
+      {/* Header Banner */}
+      <div className="relative overflow-hidden rounded-3xl border border-sky-500/20 bg-gradient-to-br from-sky-950/30 via-card to-card p-6 md:p-8 backdrop-blur-xl">
+        <div className="absolute -right-16 -top-16 h-64 w-64 rounded-full bg-sky-500/10 blur-3xl pointer-events-none" />
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          <div className="space-y-2">
+            <div className="inline-flex items-center gap-2 rounded-full border border-sky-500/30 bg-sky-500/10 px-3 py-1 text-xs font-semibold text-sky-400">
+              <Lock className="h-3.5 w-3.5" />
+              <span>Masked Identity Two-Way Relay</span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
+              Anonymous Contact Relay
+            </h1>
+            <p className="text-xs sm:text-sm text-muted-foreground max-w-2xl leading-relaxed">
+              Communicate safely with drivers and visitors who scanned your vehicle pass. Personal phone numbers and addresses remain completely concealed on both sides.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <div className="rounded-2xl border border-border bg-card/60 px-4 py-3 backdrop-blur-md">
+              <div className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
+                Unanswered
+              </div>
+              <div className="text-xl font-mono font-bold text-sky-400">
+                {pendingCount}
+              </div>
+            </div>
+            <div className="rounded-2xl border border-border bg-card/60 px-4 py-3 backdrop-blur-md">
+              <div className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
+                Replied
+              </div>
+              <div className="text-xl font-mono font-bold text-emerald-400">
+                {repliedCount}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
       {loading ? (
         <div className="space-y-4">
-          <Skeleton className="h-32 rounded-xl" />
-          <Skeleton className="h-32 rounded-xl" />
+          <Skeleton className="h-36 rounded-3xl" />
+          <Skeleton className="h-36 rounded-3xl" />
         </div>
       ) : messages.length === 0 ? (
-        <div className="bg-card border border-border border-dashed rounded-2xl p-12 text-center space-y-3">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-emerald-600">
-            <MessageSquare className="h-7 w-7" />
+        <div className="bg-card border border-border border-dashed rounded-3xl p-16 text-center space-y-4">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-sky-500/10 text-sky-400 border border-sky-500/20">
+            <MessageSquare className="h-8 w-8" />
           </div>
-          <h3 className="text-base font-bold text-foreground">No relay messages yet</h3>
-          <p className="text-xs text-muted-foreground max-w-sm mx-auto">
-            When a visitor leaves an anonymous note via your vehicle profile, the conversation thread
-            will appear here.
+          <h3 className="text-lg font-bold text-foreground">No relay messages yet</h3>
+          <p className="text-xs sm:text-sm text-muted-foreground max-w-md mx-auto leading-relaxed">
+            When a visitor leaves an anonymous note via your public vehicle pass, the masked conversation thread appears here.
           </p>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-5">
           {messages.map((msg) => (
             <div
               key={msg.id}
-              className="bg-card border border-border rounded-2xl p-6 shadow-sm space-y-4"
+              className="rounded-3xl border border-border/80 bg-card p-6 shadow-sm space-y-5 backdrop-blur-xl"
             >
-              <div className="flex items-center justify-between pb-3 border-b border-border">
-                <div className="flex items-center gap-2">
-                  <span className="p-1.5 rounded-lg bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300">
-                    <Car className="h-4 w-4" />
-                  </span>
+              {/* Card Header */}
+              <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-border/60">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-xl bg-slate-900 border border-slate-700/80 flex items-center justify-center font-bold text-xs font-mono text-emerald-400">
+                    <Car className="h-5 w-5" />
+                  </div>
                   <div>
-                    <span className="text-xs font-bold text-foreground font-mono">
-                      {msg.vehicle?.registration_number}
-                    </span>
-                    <span className="text-xs text-muted-foreground ml-2">
-                      ({msg.vehicle?.brand} {msg.vehicle?.model})
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono font-extrabold text-sm text-foreground">
+                        {msg.vehicle?.registration_number}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        • {msg.vehicle?.brand} {msg.vehicle?.model}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1 text-[11px] text-muted-foreground mt-0.5">
+                      <Clock className="h-3 w-3" />
+                      <span>Received {formatTimeAgo(msg.created_at)}</span>
+                    </div>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <span className="text-[11px] text-muted-foreground">
-                    {formatTimeAgo(msg.created_at)}
-                  </span>
-                  <Badge variant={msg.status === "replied" ? "success" : "secondary"} className="text-[10px]">
-                    {msg.status}
-                  </Badge>
-                </div>
+                <Badge
+                  variant={msg.status === "replied" ? "success" : "secondary"}
+                  className="text-[10px] font-mono capitalize"
+                >
+                  {msg.status}
+                </Badge>
               </div>
 
-              {/* Visitor Note */}
-              <div className="bg-muted/40 p-4 rounded-xl border border-border space-y-1">
+              {/* Visitor Message Bubble */}
+              <div className="relative rounded-2xl border border-border/80 bg-muted/40 p-4 space-y-1.5">
                 <div className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
-                  <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
-                  Visitor Message (Identity Protected)
+                  <ShieldCheck className="h-3.5 w-3.5 text-sky-400" />
+                  <span>Public Scanner Note (Encrypted Relay)</span>
                 </div>
-                <p className="text-sm text-foreground">{msg.message}</p>
+                <p className="text-sm text-foreground leading-relaxed">
+                  {msg.message}
+                </p>
               </div>
 
-              {/* Owner Reply if exists */}
+              {/* Owner Reply */}
               {msg.owner_reply && (
-                <div className="bg-emerald-50/50 dark:bg-emerald-950/30 p-4 rounded-xl border border-emerald-200 dark:border-emerald-800/40 space-y-1 ml-6">
-                  <div className="text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase tracking-wider flex items-center gap-1.5">
-                    <Check className="h-3.5 w-3.5 text-emerald-600" />
-                    Your Response
+                <div className="relative rounded-2xl border border-emerald-500/30 bg-emerald-950/20 p-4 space-y-1.5 ml-4 md:ml-8">
+                  <div className="text-[11px] font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+                    <Check className="h-3.5 w-3.5 text-emerald-400" />
+                    <span>Your Response to Visitor</span>
                   </div>
-                  <p className="text-sm text-foreground">{msg.owner_reply}</p>
+                  <p className="text-sm text-foreground leading-relaxed">
+                    {msg.owner_reply}
+                  </p>
+                  {msg.replied_at && (
+                    <div className="text-[10px] text-emerald-400/80 font-mono">
+                      Sent {formatTimeAgo(msg.replied_at)}
+                    </div>
+                  )}
                 </div>
               )}
 
-              {/* Reply Form */}
+              {/* Input if not replied yet */}
               {!msg.owner_reply && (
-                <div className="pt-2 flex items-center gap-2">
+                <div className="pt-2 flex flex-col sm:flex-row items-stretch gap-2.5">
                   <input
                     type="text"
                     maxLength={1000}
-                    placeholder="Type a safe response to the visitor..."
+                    placeholder="Type an anonymous response (e.g. 'Coming down in 2 minutes to move it')..."
                     value={replyTextMap[msg.id] || ""}
                     onChange={(e) =>
                       setReplyTextMap({ ...replyTextMap, [msg.id]: e.target.value })
                     }
-                    className="flex-1 bg-background border border-input rounded-xl px-3.5 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                    className="flex-1 bg-background border border-border rounded-xl px-4 py-2.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-sky-500"
                   />
                   <Button
                     size="sm"
                     onClick={() => handleSendReply(msg.id)}
                     isLoading={sendingReply === msg.id}
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs h-9"
+                    className="bg-sky-600 hover:bg-sky-500 text-white text-xs font-semibold h-10 px-5 rounded-xl shadow-sm shrink-0"
                   >
-                    <Send className="mr-1.5 h-3.5 w-3.5" /> Reply
+                    <Send className="mr-1.5 h-3.5 w-3.5" /> Send Reply
                   </Button>
                 </div>
               )}

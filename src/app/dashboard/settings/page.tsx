@@ -180,72 +180,102 @@ export default function AccountSettingsPage() {
   }
 
   return (
-    <div className="space-y-8 max-w-4xl">
-      <div className="pb-4 border-b border-border">
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">Account Settings</h1>
-        <p className="text-xs text-muted-foreground mt-0.5">
-          Manage your personal profile, notification channels, and security credentials.
-        </p>
+    <div className="space-y-8 max-w-4xl mx-auto">
+      {/* Header Banner */}
+      <div className="relative overflow-hidden rounded-3xl border border-emerald-500/20 bg-gradient-to-br from-emerald-950/30 via-card to-card p-6 md:p-8 backdrop-blur-xl">
+        <div className="absolute -right-16 -top-16 h-64 w-64 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          <div className="space-y-2">
+            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-400">
+              <ShieldCheck className="h-3.5 w-3.5" />
+              <span>Owner Profile & Privacy Safeguards</span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
+              Account Settings
+            </h1>
+            <p className="text-xs sm:text-sm text-muted-foreground max-w-xl leading-relaxed">
+              Manage your personal contact details, notification broadcast channels, and security credentials.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-700 flex items-center justify-center text-white font-extrabold text-lg shadow-lg shadow-emerald-950/40">
+              {(fullName || email || "U").substring(0, 2).toUpperCase()}
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Profile Form */}
       <form
         onSubmit={handleSaveProfile}
-        className="bg-card border border-border rounded-2xl p-6 sm:p-8 shadow-sm space-y-4"
+        className="rounded-3xl border border-border/80 bg-card p-6 sm:p-8 shadow-sm space-y-5 backdrop-blur-xl"
       >
-        <h2 className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-          <User className="h-4 w-4 text-emerald-600" /> Personal Profile
-        </h2>
+        <div className="flex items-center justify-between pb-3 border-b border-border/60">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+            <User className="h-4 w-4 text-emerald-500" /> Personal Profile
+          </h2>
+          <span className="text-[11px] text-muted-foreground font-mono">
+            ID: {email}
+          </span>
+        </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="text-xs font-semibold text-foreground block mb-1">Full Name</label>
-            <Input value={fullName} onChange={(e) => setFullName(e.target.value)} required />
+            <label className="text-xs font-semibold text-foreground block mb-1.5">Full Name</label>
+            <Input
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              required
+              className="bg-background/60 text-xs h-10 rounded-xl"
+            />
           </div>
 
           <div>
-            <label className="text-xs font-semibold text-foreground block mb-1">
-              Account Email (Read-only)
+            <label className="text-xs font-semibold text-foreground block mb-1.5">
+              Account Email (Verified)
             </label>
-            <Input value={email} disabled className="bg-muted/40 cursor-not-allowed" />
+            <Input value={email} disabled className="bg-muted/40 cursor-not-allowed text-xs h-10 rounded-xl" />
           </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="text-xs font-semibold text-foreground block mb-1">
+            <label className="text-xs font-semibold text-foreground block mb-1.5">
               Primary Contact Phone
             </label>
             <Input
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="+91 98765 43210"
+              className="bg-background/60 text-xs h-10 rounded-xl font-mono"
             />
-            <p className="text-[11px] text-muted-foreground mt-0.5">
+            <p className="text-[11px] text-muted-foreground mt-1">
               Used when you enable phone calling on your vehicle profile.
             </p>
           </div>
 
           <div>
-            <label className="text-xs font-semibold text-foreground block mb-1">
+            <label className="text-xs font-semibold text-foreground block mb-1.5">
               WhatsApp Number
             </label>
             <Input
               value={whatsapp}
               onChange={(e) => setWhatsapp(e.target.value)}
               placeholder="+91 98765 43210"
+              className="bg-background/60 text-xs h-10 rounded-xl font-mono"
             />
-            <p className="text-[11px] text-muted-foreground mt-0.5">
+            <p className="text-[11px] text-muted-foreground mt-1">
               Leave blank to use your primary phone number.
             </p>
           </div>
         </div>
 
-        <div className="pt-2 flex justify-end">
+        <div className="pt-3 flex justify-end">
           <Button
             type="submit"
             isLoading={savingProfile}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs"
+            className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs h-10 px-5 rounded-xl shadow-sm"
           >
             <Save className="mr-1.5 h-3.5 w-3.5" /> Save Profile
           </Button>
@@ -255,15 +285,20 @@ export default function AccountSettingsPage() {
       {/* Notification Preferences */}
       <form
         onSubmit={handleSavePrefs}
-        className="bg-card border border-border rounded-2xl p-6 sm:p-8 shadow-sm space-y-4"
+        className="rounded-3xl border border-border/80 bg-card p-6 sm:p-8 shadow-sm space-y-5 backdrop-blur-xl"
       >
-        <h2 className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-          <Bell className="h-4 w-4 text-emerald-600" /> Notification Channels
-        </h2>
+        <div className="flex items-center justify-between pb-3 border-b border-border/60">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+            <Bell className="h-4 w-4 text-emerald-500" /> Notification Channels
+          </h2>
+          <span className="text-[11px] text-emerald-400 font-mono">
+            Active
+          </span>
+        </div>
 
         <div className="space-y-3">
-          <label className="flex items-center justify-between p-3.5 rounded-xl border border-border cursor-pointer hover:bg-muted/30">
-            <div className="space-y-0.5">
+          <label className="flex items-center justify-between p-4 rounded-2xl border border-border/80 cursor-pointer hover:bg-muted/30 transition-colors">
+            <div className="space-y-0.5 pr-4">
               <div className="text-xs font-semibold text-foreground">Email Notifications</div>
               <div className="text-[11px] text-muted-foreground">
                 Receive parking alert notices and critical relay messages via email.
@@ -277,8 +312,8 @@ export default function AccountSettingsPage() {
             />
           </label>
 
-          <label className="flex items-center justify-between p-3.5 rounded-xl border border-border cursor-pointer hover:bg-muted/30">
-            <div className="space-y-0.5">
+          <label className="flex items-center justify-between p-4 rounded-2xl border border-border/80 cursor-pointer hover:bg-muted/30 transition-colors">
+            <div className="space-y-0.5 pr-4">
               <div className="text-xs font-semibold text-foreground">Realtime Browser Alerts</div>
               <div className="text-[11px] text-muted-foreground">
                 Display immediate notifications when logged into your dashboard.
@@ -292,8 +327,8 @@ export default function AccountSettingsPage() {
             />
           </label>
 
-          <label className="flex items-center justify-between p-3.5 rounded-xl border border-border cursor-pointer hover:bg-muted/30">
-            <div className="space-y-0.5">
+          <label className="flex items-center justify-between p-4 rounded-2xl border border-border/80 cursor-pointer hover:bg-muted/30 transition-colors">
+            <div className="space-y-0.5 pr-4">
               <div className="text-xs font-semibold text-foreground">Scan Alerts</div>
               <div className="text-[11px] text-muted-foreground">
                 Receive notification whenever a visitor scans your vehicle QR sticker.
@@ -308,11 +343,11 @@ export default function AccountSettingsPage() {
           </label>
         </div>
 
-        <div className="pt-2 flex justify-end">
+        <div className="pt-3 flex justify-end">
           <Button
             type="submit"
             isLoading={savingPrefs}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs"
+            className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs h-10 px-5 rounded-xl shadow-sm"
           >
             <Save className="mr-1.5 h-3.5 w-3.5" /> Save Preferences
           </Button>
@@ -322,15 +357,20 @@ export default function AccountSettingsPage() {
       {/* Password Update */}
       <form
         onSubmit={handleUpdatePassword}
-        className="bg-card border border-border rounded-2xl p-6 sm:p-8 shadow-sm space-y-4"
+        className="rounded-3xl border border-border/80 bg-card p-6 sm:p-8 shadow-sm space-y-5 backdrop-blur-xl"
       >
-        <h2 className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-          <Lock className="h-4 w-4 text-emerald-600" /> Security & Password
-        </h2>
+        <div className="flex items-center justify-between pb-3 border-b border-border/60">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+            <Lock className="h-4 w-4 text-emerald-500" /> Security & Password
+          </h2>
+          <span className="text-[11px] text-muted-foreground font-mono">
+            Minimum 6 characters
+          </span>
+        </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="text-xs font-semibold text-foreground block mb-1">
+            <label className="text-xs font-semibold text-foreground block mb-1.5">
               New Password
             </label>
             <Input
@@ -339,11 +379,12 @@ export default function AccountSettingsPage() {
               onChange={(e) => setNewPassword(e.target.value)}
               placeholder="••••••••"
               required
+              className="bg-background/60 text-xs h-10 rounded-xl"
             />
           </div>
 
           <div>
-            <label className="text-xs font-semibold text-foreground block mb-1">
+            <label className="text-xs font-semibold text-foreground block mb-1.5">
               Confirm Password
             </label>
             <Input
@@ -352,16 +393,17 @@ export default function AccountSettingsPage() {
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="••••••••"
               required
+              className="bg-background/60 text-xs h-10 rounded-xl"
             />
           </div>
         </div>
 
-        <div className="pt-2 flex justify-end">
+        <div className="pt-3 flex justify-end">
           <Button
             type="submit"
             isLoading={savingPassword}
             variant="outline"
-            className="text-xs h-9"
+            className="text-xs h-10 px-5 rounded-xl border-border/80 font-medium hover:bg-muted"
           >
             Update Password
           </Button>

@@ -19,6 +19,13 @@ import {
   Layers,
   FileText,
   Lock,
+  Compass,
+  Lightbulb,
+  Eye,
+  Check,
+  Zap,
+  Smartphone,
+  Copy,
 } from "lucide-react";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
@@ -27,6 +34,8 @@ import { Badge } from "@/components/ui/badge";
 
 export default function HomePage() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [demoTab, setDemoTab] = useState<"pass" | "alert" | "relay">("pass");
+  const [copiedLink, setCopiedLink] = useState(false);
 
   const faqs = [
     {
@@ -51,118 +60,253 @@ export default function HomePage() {
     },
   ];
 
+  const handleCopyDemo = () => {
+    navigator.clipboard.writeText("https://parklink.app/v/a8Kp92xLmQ");
+    setCopiedLink(true);
+    setTimeout(() => setCopiedLink(false), 2000);
+  };
+
   return (
     <div className="flex min-h-screen flex-col bg-background selection:bg-emerald-500/20">
       <Navbar />
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden pt-12 pb-20 md:pt-20 md:pb-32 border-b border-border/40">
-        <div className="container max-w-7xl px-4 sm:px-8 mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      {/* Atmospheric Hero Section */}
+      <section className="relative overflow-hidden pt-12 pb-24 md:pt-20 md:pb-36 border-b border-border/60 bg-grid-pattern">
+        {/* Ambient Gradient Glows */}
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-emerald-500/10 dark:bg-emerald-500/15 rounded-full blur-[120px] pointer-events-none" />
+
+        <div className="container max-w-7xl px-4 sm:px-8 mx-auto relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
             {/* Left Column: Headline & Value Prop */}
             <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 text-xs font-semibold text-emerald-800 dark:text-emerald-300">
-                <Sparkles className="h-3.5 w-3.5" />
-                <span>Next-Gen Smart Vehicle Contact</span>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/80 text-xs font-semibold text-emerald-800 dark:text-emerald-300 shadow-sm animate-in fade-in slide-in-from-top-2">
+                <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-radar" />
+                <span>Smart Vehicle Identification & Contact System</span>
               </div>
 
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-foreground leading-[1.12]">
+              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-foreground leading-[1.08]">
                 Your Vehicle. <br />
-                <span className="text-emerald-600">One Scan.</span> <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-500 dark:from-emerald-400 dark:via-emerald-300 dark:to-teal-300">
+                  One Scan.
+                </span> <br />
                 Instant Connection.
               </h1>
 
-              <p className="text-base sm:text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed">
-                Make parking easier. Connect with vehicle owners instantly through a simple dynamic
-                QR code. No app required. No unnecessary hassle. Protect your privacy while never
-                getting trapped in a parking spot again.
+              <p className="text-base sm:text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed font-normal">
+                Make parking effortless. Connect with vehicle owners instantly through a simple
+                permanent dynamic QR sticker. No mobile app download required. Total privacy preservation.
               </p>
 
-              {/* CTAs */}
+              {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 pt-2">
                 <Link href="/register" className="w-full sm:w-auto">
                   <Button
                     size="lg"
-                    className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-semibold h-12 px-8 shadow-md"
+                    className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-semibold h-12 px-8 shadow-lg shadow-emerald-600/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
                   >
-                    Get Started Free <ArrowRight className="ml-2 h-4 w-4" />
+                    Get Your Free Vehicle QR <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>
-                <Link href="#how-it-works" className="w-full sm:w-auto">
+                <Link href="/v/a8Kp92xLmQ" target="_blank" className="w-full sm:w-auto">
                   <Button
                     variant="outline"
                     size="lg"
-                    className="w-full sm:w-auto font-medium h-12 px-6"
+                    className="w-full sm:w-auto font-medium h-12 px-6 border-border hover:bg-muted/60"
                   >
-                    How It Works
+                    <Smartphone className="mr-2 h-4 w-4 text-emerald-600" />
+                    Live Scan Demo
                   </Button>
                 </Link>
               </div>
 
-              {/* Trust Badges */}
-              <div className="pt-4 flex flex-wrap items-center justify-center lg:justify-start gap-6 text-xs text-muted-foreground">
+              {/* Key Trust Signals */}
+              <div className="pt-4 flex flex-wrap items-center justify-center lg:justify-start gap-6 text-xs text-muted-foreground font-medium">
                 <div className="flex items-center gap-1.5">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                  <span>No mobile app required</span>
+                  <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                  <span>Zero app download</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                  <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                   <span>Masked phone privacy</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                  <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                   <span>Permanent dynamic sticker</span>
                 </div>
               </div>
             </div>
 
-            {/* Right Column: Live Interactive Mock / Visual */}
+            {/* Right Column: Interactive Product Experience Console */}
             <div className="lg:col-span-5 flex justify-center">
-              <div className="relative w-full max-w-sm rounded-3xl p-1 bg-gradient-to-b from-emerald-500/20 via-border to-transparent shadow-2xl">
-                <div className="bg-card rounded-[22px] border border-border p-6 space-y-5">
-                  {/* Vehicle Tag Header */}
-                  <div className="flex items-center justify-between pb-3 border-b border-border">
-                    <div className="flex items-center gap-2.5">
-                      <div className="h-8 w-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold text-sm">
-                        <Car className="h-4 w-4" />
-                      </div>
-                      <div>
-                        <div className="text-xs font-bold text-foreground">Hyundai Creta • White</div>
-                        <div className="text-[10px] text-muted-foreground font-mono">DL 01 AB 1234</div>
-                      </div>
-                    </div>
-                    <Badge variant="success" className="text-[10px]">Active</Badge>
+              <div className="relative w-full max-w-sm">
+                {/* Glow behind device */}
+                <div className="absolute -inset-1 bg-gradient-to-r from-emerald-500/30 to-teal-500/20 rounded-[32px] blur-xl opacity-75" />
+
+                <div className="relative bg-card border border-border/80 rounded-[28px] shadow-2xl overflow-hidden">
+                  {/* Interactive Tab Switcher */}
+                  <div className="bg-muted/60 p-1.5 border-b border-border flex items-center justify-between text-xs">
+                    <button
+                      onClick={() => setDemoTab("pass")}
+                      className={`flex-1 py-1.5 rounded-lg font-semibold transition-all ${
+                        demoTab === "pass"
+                          ? "bg-card text-foreground shadow-sm"
+                          : "text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      Digital Pass
+                    </button>
+                    <button
+                      onClick={() => setDemoTab("alert")}
+                      className={`flex-1 py-1.5 rounded-lg font-semibold transition-all ${
+                        demoTab === "alert"
+                          ? "bg-card text-foreground shadow-sm"
+                          : "text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      1-Tap Alert
+                    </button>
+                    <button
+                      onClick={() => setDemoTab("relay")}
+                      className={`flex-1 py-1.5 rounded-lg font-semibold transition-all ${
+                        demoTab === "relay"
+                          ? "bg-card text-foreground shadow-sm"
+                          : "text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      Masked Call
+                    </button>
                   </div>
 
-                  {/* QR Sticker Card */}
-                  <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 text-center space-y-2">
-                    <div className="mx-auto w-36 h-36 bg-white p-2 rounded-xl shadow-inner flex items-center justify-center">
-                      <QrCode className="h-32 w-32 text-slate-900" />
+                  {/* Dynamic Device Content */}
+                  <div className="p-6 space-y-5">
+                    {/* Top Identity Header */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <div className="h-9 w-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold text-sm shadow-md">
+                          <Car className="h-5 w-5" />
+                        </div>
+                        <div>
+                          <div className="text-xs font-bold text-foreground">Hyundai Creta • SX(O)</div>
+                          <div className="text-[10px] text-muted-foreground font-plate font-semibold text-emerald-700 dark:text-emerald-400">
+                            DL 01 AB 1234
+                          </div>
+                        </div>
+                      </div>
+                      <Badge variant="success" className="text-[10px]">
+                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 mr-1 animate-pulse" />
+                        Active
+                      </Badge>
                     </div>
-                    <div className="text-[11px] font-bold text-emerald-700 dark:text-emerald-400 tracking-wider">
-                      SCAN TO REACH OWNER
-                    </div>
-                    <div className="text-[10px] text-muted-foreground">
-                      parklink.app/v/a8Kp92xLmQ
-                    </div>
-                  </div>
 
-                  {/* Sample Action Simulation */}
-                  <div className="space-y-2 pt-1">
-                    <div className="w-full bg-emerald-600 text-white rounded-xl py-2.5 px-3 text-xs font-semibold flex items-center justify-between shadow-sm">
-                      <span className="flex items-center gap-2">
-                        <AlertTriangle className="h-3.5 w-3.5" />
-                        Send Parking Alert
-                      </span>
-                      <span className="text-[10px] bg-white/20 px-2 py-0.5 rounded-full">1-Tap</span>
-                    </div>
-                    <div className="w-full bg-muted/60 text-foreground rounded-xl py-2.5 px-3 text-xs font-medium flex items-center justify-between">
-                      <span className="flex items-center gap-2">
-                        <PhoneCall className="h-3.5 w-3.5 text-emerald-600" />
-                        Call Owner
-                      </span>
-                      <span className="text-[10px] text-muted-foreground">Direct / Masked</span>
-                    </div>
+                    {demoTab === "pass" && (
+                      <div className="space-y-4 animate-in fade-in duration-200">
+                        {/* Interactive QR Sticker Container */}
+                        <div className="bg-slate-50 dark:bg-slate-900 border-2 border-emerald-500/30 rounded-2xl p-5 text-center space-y-2 shadow-inner">
+                          <div className="mx-auto w-36 h-36 bg-white p-2.5 rounded-xl shadow-md flex items-center justify-center">
+                            <QrCode className="h-32 w-32 text-slate-900" />
+                          </div>
+                          <div className="text-[11px] font-bold text-emerald-800 dark:text-emerald-300 tracking-wider uppercase">
+                            PARKLINK VERIFIED STICKER
+                          </div>
+                          <div className="text-[10px] text-muted-foreground font-mono">
+                            parklink.app/v/a8Kp92xLmQ
+                          </div>
+                        </div>
+
+                        {/* Quick link button */}
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="subtle"
+                            size="sm"
+                            onClick={handleCopyDemo}
+                            className="flex-1 text-xs h-8"
+                          >
+                            {copiedLink ? <Check className="mr-1 h-3.5 w-3.5" /> : <Copy className="mr-1 h-3.5 w-3.5" />}
+                            {copiedLink ? "Copied Demo URL" : "Copy Permanent URL"}
+                          </Button>
+                          <Link href="/v/a8Kp92xLmQ" target="_blank">
+                            <Button variant="outline" size="sm" className="text-xs h-8">
+                              Scan Live
+                            </Button>
+                          </Link>
+                        </div>
+                      </div>
+                    )}
+
+                    {demoTab === "alert" && (
+                      <div className="space-y-3 animate-in fade-in duration-200">
+                        <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/40 text-xs text-amber-900 dark:text-amber-200">
+                          <span className="font-semibold block mb-0.5">Instant Parking Alerts</span>
+                          Scanners select a situation with 1 click. Zero typing required.
+                        </div>
+
+                        <div className="space-y-1.5 text-xs">
+                          <div className="p-2.5 rounded-lg border border-emerald-600 bg-emerald-50/60 dark:bg-emerald-950/40 flex items-center justify-between font-medium">
+                            <span className="flex items-center gap-2">
+                              <AlertTriangle className="h-3.5 w-3.5 text-rose-500" />
+                              Vehicle Blocking Exit
+                            </span>
+                            <Badge variant="success" className="text-[9px]">Pre-selected</Badge>
+                          </div>
+                          <div className="p-2.5 rounded-lg border border-border bg-card flex items-center justify-between text-muted-foreground">
+                            <span className="flex items-center gap-2">
+                              <Lightbulb className="h-3.5 w-3.5 text-yellow-500" />
+                              Headlights Switched On
+                            </span>
+                          </div>
+                          <div className="p-2.5 rounded-lg border border-border bg-card flex items-center justify-between text-muted-foreground">
+                            <span className="flex items-center gap-2">
+                              <Eye className="h-3.5 w-3.5 text-sky-500" />
+                              Window Left Open
+                            </span>
+                          </div>
+                        </div>
+
+                        <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs h-9">
+                          Send 1-Tap Alert to Owner
+                        </Button>
+                      </div>
+                    )}
+
+                    {demoTab === "relay" && (
+                      <div className="space-y-4 animate-in fade-in duration-200">
+                        <div className="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-border text-xs space-y-1">
+                          <div className="font-semibold text-foreground flex items-center gap-1.5">
+                            <Lock className="h-3.5 w-3.5 text-emerald-600" />
+                            Number Masking Active
+                          </div>
+                          <p className="text-[11px] text-muted-foreground">
+                            Visitors can call you without learning your private telephone number.
+                          </p>
+                        </div>
+
+                        <div className="space-y-2">
+                          <a href="tel:+919876543210" className="block w-full">
+                            <Button
+                              variant="outline"
+                              className="w-full justify-between h-10 text-xs border-emerald-500/40 font-semibold"
+                            >
+                              <span className="flex items-center gap-2">
+                                <PhoneCall className="h-3.5 w-3.5 text-emerald-600" />
+                                Call Owner (Masked)
+                              </span>
+                              <Badge variant="subtle" className="text-[9px]">Direct</Badge>
+                            </Button>
+                          </a>
+
+                          <Button
+                            variant="secondary"
+                            className="w-full justify-between h-10 text-xs font-semibold"
+                          >
+                            <span className="flex items-center gap-2">
+                              <MessageCircle className="h-3.5 w-3.5 text-green-600" />
+                              WhatsApp Driver
+                            </span>
+                            <Badge variant="charcoal" className="text-[9px]">Pre-filled</Badge>
+                          </Button>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -171,206 +315,152 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* How It Works Section */}
-      <section id="how-it-works" className="py-20 bg-slate-50/50 dark:bg-slate-950/40 border-b border-border/40">
-        <div className="container max-w-7xl px-4 sm:px-8 mx-auto text-center space-y-4">
-          <Badge variant="subtle" className="text-xs">Seamless Workflow</Badge>
-          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
-            How ParkLink Works
-          </h2>
-          <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto">
-            From vehicle registration to instant parking resolution in three simple steps.
-          </p>
+      {/* Bento Grid: Core Product Superpowers */}
+      <section className="py-24 border-b border-border/40">
+        <div className="container max-w-7xl px-4 sm:px-8 mx-auto space-y-12">
+          <div className="text-center space-y-3 max-w-2xl mx-auto">
+            <Badge variant="subtle" className="text-xs">Why ParkLink</Badge>
+            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
+              Engineered for Real-World Parking Friction
+            </h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Every detail is designed to solve blocked exits in seconds while giving vehicle owners
+              100% control over their personal privacy.
+            </p>
+          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-10 text-left">
-            {/* Step 1 */}
-            <div className="bg-card border border-border rounded-2xl p-6 shadow-sm relative group hover:border-emerald-500/50 transition-all">
-              <div className="h-10 w-10 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 flex items-center justify-center font-bold text-lg mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+            {/* Feature 1: Dynamic QR Code Architecture (Wide Card) */}
+            <div className="md:col-span-8 bg-card border border-border/80 rounded-3xl p-8 shadow-sm flex flex-col justify-between hover:border-emerald-500/40 transition-all">
+              <div className="space-y-3">
+                <span className="p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 inline-block">
+                  <Zap className="h-6 w-6" />
+                </span>
+                <h3 className="text-2xl font-bold text-foreground">
+                  Permanent Dynamic URL — Never Reprint Again
+                </h3>
+                <p className="text-sm text-muted-foreground max-w-xl leading-relaxed">
+                  Amateur QR generators print your raw phone number right on the sticker. If you
+                  change numbers or travel, the sticker is useless. ParkLink stores an opaque token;
+                  your physical sticker connects to live cloud settings that update in real-time.
+                </p>
+              </div>
+
+              <div className="pt-6 mt-6 border-t border-border/60 grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+                <div>
+                  <strong className="text-foreground block font-bold">1-Click Token Rotation</strong>
+                  <span className="text-muted-foreground">Neutralize stolen or scraped stickers instantly.</span>
+                </div>
+                <div>
+                  <strong className="text-foreground block font-bold">Vector SVG & Print PDF</strong>
+                  <span className="text-muted-foreground">Laser-sharp printing for windshield stickers.</span>
+                </div>
+                <div>
+                  <strong className="text-foreground block font-bold">Instant Cloud Propagation</strong>
+                  <span className="text-muted-foreground">Zero cache delay on updated telephone numbers.</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Feature 2: Masked Phone & Zero PII Exposure */}
+            <div className="md:col-span-4 bg-card border border-border/80 rounded-3xl p-8 shadow-sm flex flex-col justify-between hover:border-emerald-500/40 transition-all">
+              <div className="space-y-3">
+                <span className="p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 inline-block">
+                  <EyeOff className="h-6 w-6" />
+                </span>
+                <h3 className="text-xl font-bold text-foreground">100% Masked Privacy</h3>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Never leave handwritten phone slips on your dashboard. Hide your telephone number
+                  completely and communicate solely via structured parking alerts or anonymous relay.
+                </p>
+              </div>
+
+              <div className="pt-4 text-xs font-semibold text-emerald-600 flex items-center gap-1.5">
+                <ShieldCheck className="h-4 w-4" />
+                <span>Zero spam, zero harassment</span>
+              </div>
+            </div>
+
+            {/* Feature 3: Anti-Spam Rate Limits */}
+            <div className="md:col-span-4 bg-card border border-border/80 rounded-3xl p-8 shadow-sm space-y-3 hover:border-emerald-500/40 transition-all">
+              <span className="p-3 rounded-2xl bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 inline-block">
+                <AlertTriangle className="h-6 w-6" />
+              </span>
+              <h3 className="text-xl font-bold text-foreground">Anti-Spam Cooldowns</h3>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Cryptographic rate limits prevent bot abuse or malicious repeated triggers.
+                A maximum of 3 alerts per 15-minute window is strictly enforced.
+              </p>
+            </div>
+
+            {/* Feature 4: Campus & Institutional Scale */}
+            <div className="md:col-span-8 bg-card border border-border/80 rounded-3xl p-8 shadow-sm flex flex-col justify-between hover:border-emerald-500/40 transition-all">
+              <div className="space-y-3">
+                <span className="p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 inline-block">
+                  <Building2 className="h-6 w-6" />
+                </span>
+                <h3 className="text-2xl font-bold text-foreground">
+                  Institutional Parking Management
+                </h3>
+                <p className="text-sm text-muted-foreground max-w-xl leading-relaxed">
+                  Colleges, universities, housing societies, and corporate IT parks can register
+                  thousands of vehicles in bulk, assign parking bays, and monitor campus parking
+                  conflicts through unified admin oversight.
+                </p>
+              </div>
+
+              <div className="pt-4 flex items-center gap-4 text-xs text-muted-foreground">
+                <span>• University Campuses</span>
+                <span>• Gated Societies</span>
+                <span>• Tech Parks</span>
+                <span>• Hospital Routes</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Visual Workflow Section */}
+      <section id="how-it-works" className="py-24 bg-slate-50/50 dark:bg-slate-950/40 border-b border-border/40">
+        <div className="container max-w-7xl px-4 sm:px-8 mx-auto text-center space-y-12">
+          <div className="space-y-3 max-w-2xl mx-auto">
+            <Badge variant="subtle" className="text-xs">Simple 3-Step Process</Badge>
+            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
+              How ParkLink Works
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
+            <div className="bg-card border border-border rounded-3xl p-8 shadow-sm space-y-4 hover:border-emerald-500/40 transition-all">
+              <div className="h-12 w-12 rounded-2xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 flex items-center justify-center font-black text-xl">
                 1
               </div>
-              <h3 className="text-lg font-bold text-foreground">Register & Place Sticker</h3>
-              <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
-                Add your vehicle in 60 seconds. ParkLink generates an opaque cryptographic QR token.
-                Download the high-res sticker or print-ready PDF and place it on your windshield.
+              <h3 className="text-lg font-bold text-foreground">Add Vehicle & Print Sticker</h3>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Register your vehicle in 60 seconds. Download the high-res sticker or printable PDF
+                card and attach it to your windshield or sun visor.
               </p>
             </div>
 
-            {/* Step 2 */}
-            <div className="bg-card border border-border rounded-2xl p-6 shadow-sm relative group hover:border-emerald-500/50 transition-all">
-              <div className="h-10 w-10 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 flex items-center justify-center font-bold text-lg mb-4">
+            <div className="bg-card border border-border rounded-3xl p-8 shadow-sm space-y-4 hover:border-emerald-500/40 transition-all">
+              <div className="h-12 w-12 rounded-2xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 flex items-center justify-center font-black text-xl">
                 2
               </div>
-              <h3 className="text-lg font-bold text-foreground">Anyone Scans With Camera</h3>
-              <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
-                If your car is blocking another vehicle or has lights on, a passerby scans the code
-                with their native smartphone camera. No app download or sign-up needed.
+              <h3 className="text-lg font-bold text-foreground">Scanner Points Camera</h3>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                If your car is blocking another vehicle or has lights left on, a passerby scans the
+                sticker with any standard phone camera. No app download needed.
               </p>
             </div>
 
-            {/* Step 3 */}
-            <div className="bg-card border border-border rounded-2xl p-6 shadow-sm relative group hover:border-emerald-500/50 transition-all">
-              <div className="h-10 w-10 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 flex items-center justify-center font-bold text-lg mb-4">
+            <div className="bg-card border border-border rounded-3xl p-8 shadow-sm space-y-4 hover:border-emerald-500/40 transition-all">
+              <div className="h-12 w-12 rounded-2xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 flex items-center justify-center font-black text-xl">
                 3
               </div>
-              <h3 className="text-lg font-bold text-foreground">Instant Alert & Resolution</h3>
-              <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
-                Visitor sends a 1-tap parking alert (&quot;Car blocking&quot;, &quot;Please move&quot;) or calls you.
-                You receive instant real-time alerts on your dashboard and phone.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Feature Deep Dive: Smart Parking Alerts */}
-      <section id="features" className="py-20 border-b border-border/40">
-        <div className="container max-w-7xl px-4 sm:px-8 mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            <div className="lg:col-span-6 space-y-5">
-              <Badge variant="subtle" className="text-xs">No Awkward Honking</Badge>
-              <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
-                Smart Parking Alert System
-              </h2>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Vehicles frequently block driveways, double park, or leave headlights on. ParkLink
-                replaces loud horn honking and scratch-and-dent frustrations with structured,
-                instant digital alerts.
-              </p>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                <div className="p-3 rounded-xl border border-border bg-card">
-                  <div className="font-semibold text-xs text-foreground flex items-center gap-2">
-                    <span className="h-2 w-2 rounded-full bg-rose-500" />
-                    Vehicle Blocking
-                  </div>
-                  <div className="text-[11px] text-muted-foreground mt-1">
-                    Instant notify to clear blocked bay.
-                  </div>
-                </div>
-
-                <div className="p-3 rounded-xl border border-border bg-card">
-                  <div className="font-semibold text-xs text-foreground flex items-center gap-2">
-                    <span className="h-2 w-2 rounded-full bg-yellow-500" />
-                    Lights Left On
-                  </div>
-                  <div className="text-[11px] text-muted-foreground mt-1">
-                    Prevents dead battery emergencies.
-                  </div>
-                </div>
-
-                <div className="p-3 rounded-xl border border-border bg-card">
-                  <div className="font-semibold text-xs text-foreground flex items-center gap-2">
-                    <span className="h-2 w-2 rounded-full bg-sky-500" />
-                    Window Open
-                  </div>
-                  <div className="text-[11px] text-muted-foreground mt-1">
-                    Protects interior from rain or theft.
-                  </div>
-                </div>
-
-                <div className="p-3 rounded-xl border border-border bg-card">
-                  <div className="font-semibold text-xs text-foreground flex items-center gap-2">
-                    <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                    Anonymous Relay
-                  </div>
-                  <div className="text-[11px] text-muted-foreground mt-1">
-                    Safe 2-way message without numbers.
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="lg:col-span-6 bg-slate-50 dark:bg-slate-900 border border-border rounded-3xl p-6 sm:p-8 space-y-4">
-              <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">
-                Dynamic QR Advantage
-              </h3>
-              <div className="space-y-4 text-xs">
-                <div className="flex items-start gap-3">
-                  <div className="p-2 rounded-lg bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300">
-                    <Lock className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-foreground">Zero Private Data in the QR</h4>
-                    <p className="text-muted-foreground mt-0.5">
-                      Unlike amateur QR stickers that encode raw phone numbers into the image,
-                      ParkLink encodes only a secure opaque web token.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <div className="p-2 rounded-lg bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300">
-                    <EyeOff className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-foreground">1-Click Token Rotation</h4>
-                    <p className="text-muted-foreground mt-0.5">
-                      If you move, change cars, or suspect sticker tampering, rotate your token in
-                      your dashboard. The old code is permanently neutralized.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <div className="p-2 rounded-lg bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300">
-                    <Clock className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-foreground">Anti-Spam & Rate Limiting</h4>
-                    <p className="text-muted-foreground mt-0.5">
-                      Cryptographic sender cooldowns prevent automated bots or malicious repeated
-                      submissions.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Institutional Parking Module */}
-      <section id="institutions" className="py-20 bg-slate-50/40 dark:bg-slate-950/30 border-b border-border/40">
-        <div className="container max-w-7xl px-4 sm:px-8 mx-auto text-center space-y-4">
-          <Badge variant="subtle" className="text-xs">Enterprise & Education</Badge>
-          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
-            Built for Campuses, Societies & Enterprises
-          </h2>
-          <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto">
-            ParkLink powers centralized parking management for institutions managing hundreds or
-            thousands of vehicles daily.
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 pt-10 text-left">
-            <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-2">
-              <Building2 className="h-6 w-6 text-emerald-600 mb-1" />
-              <h3 className="font-bold text-sm text-foreground">Universities & Colleges</h3>
-              <p className="text-xs text-muted-foreground">
-                Issue student and faculty parking passes with unified digital vehicle verification.
-              </p>
-            </div>
-
-            <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-2">
-              <Layers className="h-6 w-6 text-emerald-600 mb-1" />
-              <h3 className="font-bold text-sm text-foreground">Residential Societies</h3>
-              <p className="text-xs text-muted-foreground">
-                End neighbor parking disputes. Seamlessly contact owners of double-parked vehicles.
-              </p>
-            </div>
-
-            <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-2">
-              <Building2 className="h-6 w-6 text-emerald-600 mb-1" />
-              <h3 className="font-bold text-sm text-foreground">Corporate IT Parks</h3>
-              <p className="text-xs text-muted-foreground">
-                Designated parking bays, security guard tools, and visitor vehicle logging.
-              </p>
-            </div>
-
-            <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-2">
-              <FileText className="h-6 w-6 text-emerald-600 mb-1" />
-              <h3 className="font-bold text-sm text-foreground">Hospitals & Malls</h3>
-              <p className="text-xs text-muted-foreground">
-                Rapid ambulance route clearing, emergency parking coordination, and CSV bulk exports.
+              <h3 className="text-lg font-bold text-foreground">Instant Alert & Clear Route</h3>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                The scanner taps a 1-click alert or calls you directly. You receive real-time push
+                notifications and reposition your car before frustration occurs.
               </p>
             </div>
           </div>
@@ -378,10 +468,10 @@ export default function HomePage() {
       </section>
 
       {/* Frequently Asked Questions */}
-      <section id="faq" className="py-20 border-b border-border/40">
+      <section id="faq" className="py-24 border-b border-border/40">
         <div className="container max-w-4xl px-4 sm:px-8 mx-auto space-y-8">
           <div className="text-center space-y-2">
-            <Badge variant="subtle" className="text-xs">Got Questions?</Badge>
+            <Badge variant="subtle" className="text-xs">Common Questions</Badge>
             <h2 className="text-3xl font-extrabold tracking-tight text-foreground">
               Frequently Asked Questions
             </h2>
@@ -393,11 +483,11 @@ export default function HomePage() {
               return (
                 <div
                   key={idx}
-                  className="rounded-xl border border-border bg-card overflow-hidden transition-all"
+                  className="rounded-2xl border border-border bg-card overflow-hidden transition-all"
                 >
                   <button
                     onClick={() => setOpenFaq(isOpen ? null : idx)}
-                    className="w-full flex items-center justify-between p-4 text-left font-semibold text-sm text-foreground hover:bg-muted/30"
+                    className="w-full flex items-center justify-between p-5 text-left font-semibold text-sm text-foreground hover:bg-muted/30"
                   >
                     <span>{faq.q}</span>
                     <ChevronDown
@@ -407,7 +497,7 @@ export default function HomePage() {
                     />
                   </button>
                   {isOpen && (
-                    <div className="px-4 pb-4 pt-1 text-xs text-muted-foreground leading-relaxed border-t border-border/50">
+                    <div className="px-5 pb-5 pt-1 text-xs text-muted-foreground leading-relaxed border-t border-border/50">
                       {faq.a}
                     </div>
                   )}
@@ -418,23 +508,36 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Bottom CTA Banner */}
-      <section className="py-20 bg-gradient-to-b from-emerald-600 to-emerald-800 text-white text-center">
+      {/* Premium Dark CTA Banner */}
+      <section className="py-24 bg-gradient-to-b from-slate-900 to-slate-950 text-white text-center border-t border-slate-800">
         <div className="container max-w-4xl px-4 mx-auto space-y-6">
-          <h2 className="text-3xl sm:text-4xl font-black tracking-tight">
-            Ready to Upgrade Your Vehicle&apos;s Parking Experience?
+          <Badge className="bg-emerald-950/80 text-emerald-400 border border-emerald-800 text-xs">
+            Instant Deployment
+          </Badge>
+          <h2 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight">
+            Protect Your Vehicle. <br />
+            Upgrade Your Parking Experience Today.
           </h2>
-          <p className="text-emerald-100 text-sm sm:text-base max-w-xl mx-auto">
-            Get your vehicle registered in under two minutes. Download and print your dynamic QR
-            sticker immediately.
+          <p className="text-slate-400 text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
+            Free forever for individual vehicle owners. Generate your verified QR sticker and start
+            parking with total peace of mind.
           </p>
-          <div className="pt-2">
+          <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link href="/register">
               <Button
                 size="lg"
-                className="bg-white text-emerald-800 hover:bg-emerald-50 font-bold h-12 px-8 shadow-xl"
+                className="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold h-12 px-8 shadow-xl"
               >
-                Create Your Free Account <ArrowRight className="ml-2 h-4 w-4" />
+                Create Free Account <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
+            <Link href="/contact">
+              <Button
+                variant="outline"
+                size="lg"
+                className="h-12 px-6 border-slate-700 text-slate-300 hover:text-white"
+              >
+                Campus & Society Inquiries
               </Button>
             </Link>
           </div>
@@ -445,4 +548,3 @@ export default function HomePage() {
     </div>
   );
 }
-
