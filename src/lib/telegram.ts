@@ -40,10 +40,15 @@ const CATEGORY_TITLES: Record<AlertCategory, string> = {
 
 export function getTelegramConfig() {
   const token = process.env.TELEGRAM_BOT_TOKEN?.trim() || "";
-  const username = process.env.TELEGRAM_BOT_USERNAME?.trim() || "ParkLinkAlertBot";
+  const username = process.env.TELEGRAM_BOT_USERNAME?.trim() || "MyParkLinkAlertbot";
   const webhookSecret = process.env.TELEGRAM_WEBHOOK_SECRET?.trim() || "";
-  const appUrl =
-    process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "") || "https://parklink-dusky.vercel.app";
+
+  let appUrl = "https://parklink-dusky.vercel.app";
+  if (process.env.NEXT_PUBLIC_APP_URL && !process.env.NEXT_PUBLIC_APP_URL.includes("localhost")) {
+    appUrl = process.env.NEXT_PUBLIC_APP_URL.replace(/\/$/, "");
+  } else if (process.env.VERCEL_URL) {
+    appUrl = `https://${process.env.VERCEL_URL}`;
+  }
 
   return {
     token,

@@ -94,9 +94,15 @@ export default function AdminTelegramPage() {
     fetchStats();
   }, []);
 
+  const resolvedWebhookUrl =
+    typeof window !== "undefined" && window.location?.origin && !window.location.origin.includes("localhost")
+      ? `${window.location.origin}/api/telegram/webhook`
+      : data?.bot?.webhookUrl && !data.bot.webhookUrl.includes("localhost")
+      ? data.bot.webhookUrl
+      : "https://parklink-dusky.vercel.app/api/telegram/webhook";
+
   const copyWebhookUrl = () => {
-    if (!data?.bot?.webhookUrl) return;
-    navigator.clipboard.writeText(data.bot.webhookUrl);
+    navigator.clipboard.writeText(resolvedWebhookUrl);
     setCopiedWebhook(true);
     toast.success("Webhook URL copied to clipboard");
     setTimeout(() => setCopiedWebhook(false), 2000);
@@ -217,7 +223,7 @@ export default function AdminTelegramPage() {
 
               <div className="flex items-center gap-2">
                 <code className="text-xs bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800 text-sky-300 font-mono select-all">
-                  {data?.bot?.webhookUrl}
+                  {resolvedWebhookUrl}
                 </code>
                 <Button
                   size="sm"

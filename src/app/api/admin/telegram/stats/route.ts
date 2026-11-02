@@ -30,6 +30,11 @@ export async function GET(request: NextRequest) {
     }
 
     const { username, isConfigured, appUrl } = getTelegramConfig();
+    const host = request.headers.get("x-forwarded-host") || request.headers.get("host");
+    const proto = request.headers.get("x-forwarded-proto") || "https";
+    const effectiveAppUrl = host && !host.includes("localhost")
+      ? `${proto}://${host}`
+      : appUrl;
 
     // 1. Fetch connected accounts
     const { data: connections, count: totalConnected } = await admin
@@ -66,7 +71,7 @@ export async function GET(request: NextRequest) {
       bot: {
         username,
         isConfigured,
-        webhookUrl: `${appUrl}/api/telegram/webhook`,
+        webhookUrl: `${effectiveAppUrl}/api/telegram/webhook`,
       },
       stats: {
         totalConnected: totalConnected || 0,

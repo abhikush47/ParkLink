@@ -38,52 +38,59 @@ export async function POST(request: NextRequest) {
       const chatId = msg.chat.id;
       const tgUser = msg.from || { id: chatId, first_name: "Owner" };
 
-      // Handle /start command
+      // Detect token passed directly or via /start <token>
+      let tokenToLink = "";
       if (text.startsWith("/start")) {
         const parts = text.split(/\s+/);
-        const startPayload = parts[1]?.trim();
-
-        if (startPayload) {
-          // Attempt account linking with token
-          const result = await consumeTelegramLinkToken(startPayload, tgUser, chatId);
-          if (!result.success) {
-            await sendTelegramMessage(
-              chatId,
-              `❌ <b>Linking Failed</b>\n\n${result.error || "Invalid or expired link."}\n\nPlease return to your ParkLink dashboard and generate a fresh linking request.`,
-              {
-                reply_markup: {
-                  inline_keyboard: [
-                    [
-                      {
-                        text: "🌐 Open ParkLink Dashboard",
-                        url: `${appUrl}/dashboard/telegram`,
-                      },
-                    ],
-                  ],
-                },
-              }
-            );
-          }
-          return NextResponse.json({ ok: true });
+        if (parts[1]?.trim()) {
+          tokenToLink = parts[1].trim();
         }
+      } else if (/^[A-Za-z0-9_-]{20,40}$/.test(text)) {
+        tokenToLink = text;
+      }
 
-        // Plain /start without token
+      if (tokenToLink) {
+        // Attempt account linking with token
+        const result = await consumeTelegramLinkToken(tokenToLink, tgUser, chatId);
+        if (!result.success) {
+          await sendTelegramMessage(
+            chatId,
+            `❌ <b>Linking Failed</b>\n\n${result.error || "Invalid or expired link."}\n\nPlease return to your ParkLink dashboard and generate a fresh linking request.`,
+            {
+              reply_markup: {
+                inline_keyboard: [
+                  [
+                    {
+                      text: "🌐 Open ParkLink Dashboard",
+                      url: `${appUrl}/dashboard/telegram`,
+                    },
+                  ],
+                ],
+              },
+            }
+          );
+        }
+        return NextResponse.json({ ok: true });
+      }
+
+      // Handle plain /start without token
+      if (text.startsWith("/start")) {
         await sendTelegramMessage(
           chatId,
           `👋 <b>Welcome to ParkLink Vehicle Assistant!</b>\n\n` +
             `ParkLink connects vehicle owners with people who scan their dynamic QR stickers.\n\n` +
             `<b>How to link your account:</b>\n` +
-            `1. Log in to your <a href="${appUrl}/dashboard">ParkLink Dashboard</a>\n` +
-            `2. Go to <b>Telegram Bot</b> settings\n` +
-            `3. Click <b>Connect Telegram</b>\n\n` +
+            `1. Open your <a href="${appUrl}/dashboard/telegram">Telegram Settings</a>\n` +
+            `2. Click <b>Connect Telegram</b>\n` +
+            `3. Send your <code>/start TOKEN</code> command or tap the link\n\n` +
             `Once linked, you will receive urgent parking alerts (blocking vehicle, lights on) directly in this chat with 1-tap responses!`,
           {
             reply_markup: {
               inline_keyboard: [
                 [
                   {
-                    text: "🌐 Open ParkLink",
-                    url: `${appUrl}/dashboard`,
+                    text: "🌐 Open ParkLink Dashboard",
+                    url: `${appUrl}/dashboard/telegram`,
                   },
                 ],
               ],
