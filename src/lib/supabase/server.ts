@@ -1,4 +1,5 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
+import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import { isSupabaseConfigured } from "./client";
 
@@ -43,13 +44,10 @@ export function createAdminClient() {
     return null;
   }
 
-  // Create server client without cookie context for admin service tasks
-  return createServerClient(supabaseUrl, serviceKey, {
-    cookies: {
-      get: () => undefined,
-      set: () => {},
-      remove: () => {},
+  return createSupabaseClient(supabaseUrl, serviceKey, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
     },
   });
 }
-
