@@ -204,3 +204,4 @@ export interface PublicVehicleProfileResponse {
   error?: string;
   message?: string;
 }
+

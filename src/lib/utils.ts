@@ -74,3 +74,4 @@ export function formatWhatsAppLink(phone: string, vehicleInfo?: { brand?: string
   
   return `https://wa.me/${cleaned}?text=${encodeURIComponent(message)}`;
 }
+

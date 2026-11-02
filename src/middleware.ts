@@ -54,11 +54,30 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // Protect /admin routes
+  // Handle /admin routes
   if (path.startsWith("/admin")) {
+    // Allow unauthenticated access to /admin/login
+    if (path === "/admin/login") {
+      if (user) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", user.id)
+          .single();
+
+        if (profile?.role === "admin") {
+          const url = request.nextUrl.clone();
+          url.pathname = "/admin";
+          return NextResponse.redirect(url);
+        }
+      }
+      return response;
+    }
+
+    // Protect all other /admin routes
     if (!user) {
       const url = request.nextUrl.clone();
-      url.pathname = "/login";
+      url.pathname = "/admin/login";
       url.searchParams.set("redirect", path);
       return NextResponse.redirect(url);
     }
@@ -78,7 +97,7 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // If already logged in and visiting auth pages, redirect to dashboard
+  // If already logged in and visiting standard auth pages, redirect to dashboard
   if ((path === "/login" || path === "/register") && user) {
     const url = request.nextUrl.clone();
     url.pathname = "/dashboard";

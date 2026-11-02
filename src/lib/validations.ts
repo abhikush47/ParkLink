@@ -95,3 +95,4 @@ export const profileSettingsSchema = z.object({
   whatsapp_number: z.string().max(20).optional().or(z.literal("")),
   avatar_url: z.string().url().optional().or(z.literal("")),
 });
+

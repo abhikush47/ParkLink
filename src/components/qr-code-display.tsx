@@ -301,3 +301,4 @@ export function QRCodeDisplay({
     </div>
   );
 }
+

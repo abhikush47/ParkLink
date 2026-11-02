@@ -172,3 +172,4 @@ export async function generatePrintablePDF(params: {
 
   return doc.output("blob");
 }
+

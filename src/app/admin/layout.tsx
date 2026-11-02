@@ -40,54 +40,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [isAdmin, setIsAdmin] = useState(false);
   const [checking, setChecking] = useState(true);
 
-  useEffect(() => {
-    let isMounted = true;
-    async function verifyAdmin() {
-      try {
-        setChecking(true);
-        const supabase = createClient();
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
-
-        if (!user) {
-          router.push("/login?redirect=/admin");
-          return;
-        }
-
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("role")
-          .eq("id", user.id)
-          .single();
-
-        if (!profile || profile.role !== "admin") {
-          // If in local development or first setup, check if we allow access or require elevation
-          // But as required: secure server-side authorization
-          if (profile?.role === "admin") {
-            if (isMounted) setIsAdmin(true);
-          } else {
-            // Check if profile role is not admin: allow demo admin view with notice or redirect
-            // Let's grant view if explicitly marked admin
-            if (isMounted) {
-              setIsAdmin(true); // For initial inspection/dev if no admin yet seeded
-            }
-          }
-        } else {
-          if (isMounted) setIsAdmin(true);
-        }
-      } catch (err) {
-        console.error("Admin verification error", err);
-      } finally {
-        if (isMounted) setChecking(false);
-      }
-    }
-
-    verifyAdmin();
-    return () => {
-      isMounted = false;
-    };
-  }, [router]);
+  // If viewing the admin login screen, render it without the admin dashboard shell
+  if (pathname === "/admin/login") {
+    return <>{children}</>;
+  }
 
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col md:flex-row">

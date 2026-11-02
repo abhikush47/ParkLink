@@ -130,3 +130,4 @@ export function ReportModal({ open, onOpenChange, token, vehicleReg }: ReportMod
     </Dialog>
   );
 }
+
