@@ -64,23 +64,23 @@ export default function AdminAuditLogsPage() {
       ) : (
         <div className="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden">
           <table className="w-full text-left text-xs text-slate-300">
-            <thead className="bg-slate-900 border-b border-slate-800 text-slate-400 uppercase font-semibold">
+            <thead className="bg-slate-900 border-b border-slate-800 text-slate-400 font-medium">
               <tr>
-                <th className="p-4">Action</th>
-                <th className="p-4">Admin</th>
-                <th className="p-4">Target Type</th>
-                <th className="p-4">Target ID</th>
-                <th className="p-4">Timestamp</th>
+                <th className="p-3.5 pl-4">Action</th>
+                <th className="p-3.5">Admin</th>
+                <th className="p-3.5">Target type</th>
+                <th className="p-3.5">Target ID</th>
+                <th className="p-3.5 pr-4">Timestamp</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800 font-mono">
               {logs.map((log) => (
-                <tr key={log.id} className="hover:bg-slate-900/50 transition-colors">
-                  <td className="p-4 font-bold text-rose-400 font-sans">{log.action}</td>
-                  <td className="p-4 font-sans text-white">{log.admin?.full_name || log.admin_id}</td>
-                  <td className="p-4 text-slate-400">{log.target_type}</td>
-                  <td className="p-4 text-slate-500 truncate max-w-xs">{log.target_id}</td>
-                  <td className="p-4 text-slate-400 text-[11px]">{formatDate(log.created_at)}</td>
+                <tr key={log.id} className="hover:bg-slate-900/50 transition-colors duration-150">
+                  <td className="p-3.5 pl-4 font-bold text-rose-400 font-sans">{log.action}</td>
+                  <td className="p-3.5 font-sans text-white">{log.admin?.full_name || log.admin_id}</td>
+                  <td className="p-3.5 text-slate-400">{log.target_type}</td>
+                  <td className="p-3.5 text-slate-500 truncate max-w-xs">{log.target_id}</td>
+                  <td className="p-3.5 pr-4 text-slate-400 text-[11px]">{formatDate(log.created_at)}</td>
                 </tr>
               ))}
             </tbody>

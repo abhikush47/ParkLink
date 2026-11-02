@@ -4,21 +4,10 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   QrCode,
-  Download,
-  Copy,
-  Check,
-  RefreshCw,
-  FileText,
   Car,
   ShieldCheck,
-  ExternalLink,
-  Layers,
-  Sparkles,
   Printer,
-  Eye,
-  Info,
   CheckCircle2,
-  Scan,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -75,83 +64,80 @@ export default function QRManagementPage() {
   const totalScans = vehicles.reduce((acc, curr) => acc + (curr.qr?.scan_count || 0), 0);
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto">
-      {/* Header Banner */}
-      <div className="relative overflow-hidden rounded-3xl border border-emerald-500/20 bg-gradient-to-br from-emerald-950/40 via-card to-card p-6 md:p-8 backdrop-blur-xl">
-        <div className="absolute -right-16 -top-16 h-64 w-64 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-          <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-400">
-              <Sparkles className="h-3.5 w-3.5" />
-              <span>Dynamic QR Studio & Windshield Kit</span>
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
-              Dynamic QR Stickers
-            </h1>
-            <p className="text-xs sm:text-sm text-muted-foreground max-w-2xl leading-relaxed">
-              Generate, preview, customize, and export high-resolution vector stickers and windshield cards. Your dynamic code remains constant even when you update contact numbers or privacy preferences.
-            </p>
+    <div className="space-y-6 max-w-7xl mx-auto">
+      {/* Header Banner - Solid Console style */}
+      <div className="rounded-2xl border border-border bg-card p-6 md:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+        <div className="space-y-2">
+          <div className="inline-flex items-center gap-2 rounded-md bg-muted px-2.5 py-1 text-xs text-foreground font-mono">
+            <QrCode className="h-3.5 w-3.5 text-emerald-600" />
+            <span>Dynamic QR studio</span>
           </div>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+            Dynamic QR stickers
+          </h1>
+          <p className="text-xs sm:text-sm text-muted-foreground max-w-2xl leading-relaxed">
+            Generate, customize, and export vector stickers and windshield cards. Your dynamic code remains permanent even when you update contact numbers or privacy preferences.
+          </p>
+        </div>
 
-          <div className="flex items-center gap-3">
-            <div className="rounded-2xl border border-border bg-card/60 px-4 py-3 backdrop-blur-md">
-              <div className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
-                Fleet Scans
-              </div>
-              <div className="text-xl font-mono font-bold text-emerald-400">
-                {totalScans}
-              </div>
+        <div className="flex items-center gap-3">
+          <div className="rounded-xl border border-border bg-muted/60 px-4 py-3">
+            <div className="text-xs font-medium text-muted-foreground">
+              Total fleet scans
             </div>
-            <div className="rounded-2xl border border-border bg-card/60 px-4 py-3 backdrop-blur-md">
-              <div className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
-                Active Stickers
-              </div>
-              <div className="text-xl font-mono font-bold text-foreground">
-                {vehicles.filter((v) => v.status === "active").length} / {vehicles.length}
-              </div>
+            <div className="text-xl font-mono font-bold text-foreground">
+              {totalScans}
+            </div>
+          </div>
+          <div className="rounded-xl border border-border bg-muted/60 px-4 py-3">
+            <div className="text-xs font-medium text-muted-foreground">
+              Active stickers
+            </div>
+            <div className="text-xl font-mono font-bold text-foreground">
+              {vehicles.filter((v) => v.status === "active").length} / {vehicles.length}
             </div>
           </div>
         </div>
       </div>
 
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
-          <Skeleton className="md:col-span-4 h-96 rounded-3xl" />
-          <Skeleton className="md:col-span-8 h-[600px] rounded-3xl" />
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+          <Skeleton className="md:col-span-4 h-96 rounded-2xl" />
+          <Skeleton className="md:col-span-8 h-[500px] rounded-2xl" />
         </div>
       ) : vehicles.length === 0 ? (
-        <div className="bg-card border border-border border-dashed rounded-3xl p-16 text-center space-y-4">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
-            <QrCode className="h-8 w-8" />
+        <div className="bg-card border border-border border-dashed rounded-2xl p-16 text-center space-y-4">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-xl bg-muted text-muted-foreground border border-border">
+            <QrCode className="h-6 w-6" />
           </div>
-          <h3 className="text-lg font-bold text-foreground">No vehicles registered yet</h3>
+          <h3 className="text-base font-semibold text-foreground">No vehicles registered yet</h3>
           <p className="text-xs sm:text-sm text-muted-foreground max-w-md mx-auto leading-relaxed">
-            Register your car, bike, or commercial vehicle to generate its dedicated permanent dynamic QR code.
+            Register your vehicle to generate its dedicated permanent dynamic QR code.
           </p>
           <Link href="/dashboard/vehicles/new">
-            <Button className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-6 shadow-lg shadow-emerald-950/30">
-              Register First Vehicle
+            <Button className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-5">
+              Register first vehicle
             </Button>
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* Left Column: Vehicle Selector list & Windshield Guidelines */}
-          <div className="lg:col-span-4 space-y-6">
-            <div className="rounded-3xl border border-border bg-card p-5 space-y-4 shadow-sm">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                  Select Vehicle ({vehicles.length})
-                </h2>
+          <div className="lg:col-span-4 space-y-4">
+            <div className="rounded-2xl border border-border bg-card p-4 space-y-3">
+              <div className="flex items-center justify-between pb-2 border-b border-border">
+                <span className="text-xs font-semibold text-muted-foreground">
+                  Select vehicle ({vehicles.length})
+                </span>
                 <Link
                   href="/dashboard/vehicles/new"
-                  className="text-xs text-emerald-500 hover:text-emerald-400 font-semibold"
+                  className="text-xs text-emerald-600 dark:text-emerald-400 hover:underline font-medium"
                 >
-                  + Add New
+                  + Add new
                 </Link>
               </div>
 
-              <div className="space-y-2.5">
+              <div className="space-y-2">
                 {vehicles.map((v) => {
                   const isSelected = v.id === selectedVehicleId;
                   return (
@@ -159,40 +145,40 @@ export default function QRManagementPage() {
                       key={v.id}
                       type="button"
                       onClick={() => setSelectedVehicleId(v.id)}
-                      className={`w-full p-3.5 rounded-2xl border text-left transition-all flex items-center justify-between group ${
+                      className={`w-full p-3 rounded-xl border text-left transition-colors duration-150 flex items-center justify-between group ${
                         isSelected
-                          ? "border-emerald-500 bg-emerald-950/20 ring-1 ring-emerald-500 shadow-md shadow-emerald-950/20"
-                          : "border-border/80 bg-background/50 hover:bg-muted/40 hover:border-border"
+                          ? "border-emerald-600 bg-emerald-500/10 text-foreground"
+                          : "border-border bg-muted/40 hover:bg-muted text-muted-foreground"
                       }`}
                     >
                       <div className="flex items-center gap-3">
                         <div
-                          className={`h-11 w-11 rounded-xl flex items-center justify-center transition-colors ${
+                          className={`h-9 w-9 rounded-lg flex items-center justify-center transition-colors duration-150 ${
                             isSelected
-                              ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                              : "bg-muted text-muted-foreground group-hover:text-foreground"
+                              ? "bg-emerald-600 text-white"
+                              : "bg-muted text-muted-foreground"
                           }`}
                         >
-                          <Car className="h-5 w-5" />
+                          <Car className="h-4 w-4" />
                         </div>
                         <div>
-                          <div className="text-sm font-bold text-foreground">
+                          <div className="text-xs font-semibold text-foreground">
                             {v.brand} {v.model}
                           </div>
-                          <div className="text-xs text-muted-foreground font-mono font-semibold">
+                          <div className="text-[11px] font-mono text-muted-foreground">
                             {v.registration_number}
                           </div>
                         </div>
                       </div>
 
-                      <div className="flex flex-col items-end gap-1">
+                      <div className="flex flex-col items-end gap-0.5">
                         <Badge
                           variant={v.status === "active" ? "success" : "secondary"}
                           className="text-[10px] font-mono capitalize"
                         >
                           {v.status}
                         </Badge>
-                        <span className="text-[10px] text-muted-foreground font-mono">
+                        <span className="text-[10px] font-mono text-muted-foreground">
                           {v.qr?.scan_count || 0} scans
                         </span>
                       </div>
@@ -203,38 +189,35 @@ export default function QRManagementPage() {
             </div>
 
             {/* Windshield Placement Guide */}
-            <div className="rounded-3xl border border-border/80 bg-card/60 p-5 space-y-3.5 text-xs backdrop-blur-sm">
-              <div className="flex items-center gap-2 font-bold text-foreground">
-                <Printer className="h-4 w-4 text-emerald-400" />
-                <span>Recommended Windshield Placement</span>
+            <div className="rounded-2xl border border-border bg-card p-4 space-y-2.5 text-xs">
+              <div className="flex items-center gap-2 font-semibold text-foreground">
+                <Printer className="h-4 w-4 text-emerald-600" />
+                <span>Windshield placement guidance</span>
               </div>
-              <p className="text-muted-foreground leading-relaxed">
-                For optimal scanning under streetlights and direct sunlight:
-              </p>
-              <ul className="space-y-2 text-muted-foreground">
+              <ul className="space-y-1.5 text-muted-foreground">
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 mt-0.5 shrink-0" />
-                  <span>Place sticker in the <strong>bottom-left or bottom-right corner</strong> of front windshield.</span>
+                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 mt-0.5 shrink-0" />
+                  <span>Mount sticker in the lower corner of the front windshield.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 mt-0.5 shrink-0" />
-                  <span>Maintain a 50mm clearance from tinted windshield sun-strips.</span>
+                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 mt-0.5 shrink-0" />
+                  <span>Ensure 50mm clearance from tinted windshield sun-strips.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 mt-0.5 shrink-0" />
-                  <span>Printed PDF output is scaled to standard <strong>3.5 × 2.5 inch</strong> automotive adhesive vinyl specs.</span>
+                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 mt-0.5 shrink-0" />
+                  <span>Exported PDF is calibrated for standard 3.5 × 2.5 inch vinyl cuts.</span>
                 </li>
               </ul>
             </div>
 
-            {/* Security Guarantee */}
-            <div className="rounded-3xl border border-emerald-500/20 bg-emerald-950/20 p-5 space-y-2.5 text-xs text-emerald-300">
-              <div className="flex items-center gap-2 font-bold text-emerald-400">
-                <ShieldCheck className="h-4 w-4" />
-                <span>Permanent Privacy Architecture</span>
+            {/* Privacy Architecture Guarantee */}
+            <div className="rounded-2xl border border-border bg-card p-4 space-y-2 text-xs">
+              <div className="flex items-center gap-2 font-semibold text-foreground">
+                <ShieldCheck className="h-4 w-4 text-emerald-600" />
+                <span>Zero personal data on sticker</span>
               </div>
-              <p className="text-emerald-200/80 leading-relaxed">
-                Your sticker encodes strictly an opaque HTTPS URL. No mobile number or home address is stored inside the barcode. If you ever misplace a car or sell it, rotate the token instantly without affecting your account.
+              <p className="text-muted-foreground leading-relaxed">
+                Stickers encode strictly an opaque token URL. Phone numbers are never embedded in the QR image itself.
               </p>
             </div>
           </div>
@@ -261,8 +244,8 @@ export default function QRManagementPage() {
                 }}
               />
             ) : (
-              <div className="bg-card border border-border rounded-3xl p-16 text-center text-muted-foreground">
-                Select a vehicle from the left menu to view and download its dynamic QR sticker.
+              <div className="bg-card border border-border rounded-2xl p-16 text-center text-muted-foreground text-xs">
+                Select a vehicle to inspect and download its dynamic QR sticker.
               </div>
             )}
           </div>
@@ -271,4 +254,3 @@ export default function QRManagementPage() {
     </div>
   );
 }
-

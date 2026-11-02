@@ -11,10 +11,6 @@ import {
   Plus,
   ArrowRight,
   ShieldCheck,
-  CheckCircle2,
-  Clock,
-  ExternalLink,
-  Zap,
   TrendingUp,
   MapPin,
   Check,
@@ -22,7 +18,6 @@ import {
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatTimeAgo } from "@/lib/utils";
 import type { Vehicle, ParkingAlert, Notification } from "@/types/database";
@@ -113,105 +108,96 @@ export default function DashboardOverviewPage() {
           <Skeleton className="h-9 w-32" />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Skeleton className="h-32 rounded-2xl" />
-          <Skeleton className="h-32 rounded-2xl" />
-          <Skeleton className="h-32 rounded-2xl" />
-          <Skeleton className="h-32 rounded-2xl" />
+          <Skeleton className="h-28 rounded-xl" />
+          <Skeleton className="h-28 rounded-xl" />
+          <Skeleton className="h-28 rounded-xl" />
+          <Skeleton className="h-28 rounded-xl" />
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <Skeleton className="lg:col-span-7 h-80 rounded-2xl" />
-          <Skeleton className="lg:col-span-5 h-80 rounded-2xl" />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <Skeleton className="lg:col-span-7 h-80 rounded-xl" />
+          <Skeleton className="lg:col-span-5 h-80 rounded-xl" />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Top Banner & Quick Add */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-border">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-[11px] font-semibold text-emerald-800 dark:text-emerald-300 mb-1.5">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            <span>Active Cloud Sync</span>
+          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-muted text-[11px] font-mono text-muted-foreground mb-1.5">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" />
+            <span>Active cloud sync</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
-            Vehicle Command Center
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+            Vehicle command center
           </h1>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Live fleet status, physical QR interaction telemetry, and parking assistance dispatch.
+            Fleet status, QR interaction telemetry, and parking assistance dispatch.
           </p>
         </div>
 
         <div className="flex items-center gap-2">
           <Link href="/dashboard/qr">
             <Button variant="outline" size="sm" className="text-xs h-9">
-              <QrCode className="mr-1.5 h-4 w-4 text-emerald-600" /> Print Stickers
+              <QrCode className="mr-1.5 h-4 w-4 text-emerald-600" /> Print stickers
             </Button>
           </Link>
           <Link href="/dashboard/vehicles/new">
-            <Button className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs h-9 font-semibold shadow-md shadow-emerald-600/20">
-              <Plus className="mr-1.5 h-4 w-4" /> Register Vehicle
+            <Button className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs h-9 font-medium">
+              <Plus className="mr-1.5 h-4 w-4" /> Register vehicle
             </Button>
           </Link>
         </div>
       </div>
 
-      {/* KPI Stat Cards with Refined Hierarchy */}
+      {/* KPI Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Card 1: Registered Fleet */}
-        <div className="bg-card border border-border/80 rounded-2xl p-5 space-y-3 shadow-sm hover:border-emerald-500/40 transition-all">
-          <div className="flex items-center justify-between text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-            <span>Registered Fleet</span>
-            <span className="p-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600">
-              <Car className="h-4 w-4" />
-            </span>
+        <div className="bg-card border border-border rounded-xl p-4 space-y-2">
+          <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
+            <span>Registered fleet</span>
+            <Car className="h-4 w-4 text-emerald-600" />
           </div>
-          <div className="space-y-1">
-            <div className="text-3xl font-black text-foreground">{vehicles.length}</div>
-            <div className="flex items-center gap-1.5 text-xs text-emerald-600 font-medium">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-              <span>{activeVehicles} active in circulation</span>
+          <div>
+            <div className="text-2xl font-mono font-bold text-foreground">{vehicles.length}</div>
+            <div className="text-xs text-muted-foreground mt-0.5">
+              {activeVehicles} active in circulation
             </div>
           </div>
         </div>
 
         {/* Card 2: Total Scans */}
-        <div className="bg-card border border-border/80 rounded-2xl p-5 space-y-3 shadow-sm hover:border-emerald-500/40 transition-all">
-          <div className="flex items-center justify-between text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-            <span>Total QR Views</span>
-            <span className="p-2 rounded-xl bg-sky-50 dark:bg-sky-950/60 text-sky-600">
-              <Eye className="h-4 w-4" />
-            </span>
+        <div className="bg-card border border-border rounded-xl p-4 space-y-2">
+          <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
+            <span>Total QR views</span>
+            <Eye className="h-4 w-4 text-muted-foreground" />
           </div>
-          <div className="space-y-1">
-            <div className="text-3xl font-black text-foreground">{totalScans}</div>
-            <div className="flex items-center gap-1 text-xs text-muted-foreground">
-              <TrendingUp className="h-3.5 w-3.5 text-sky-500" />
-              <span>Live visitor lookups logged</span>
+          <div>
+            <div className="text-2xl font-mono font-bold text-foreground">{totalScans}</div>
+            <div className="text-xs text-muted-foreground mt-0.5">
+              Live visitor lookups logged
             </div>
           </div>
         </div>
 
         {/* Card 3: Parking Alerts */}
-        <div className="bg-card border border-border/80 rounded-2xl p-5 space-y-3 shadow-sm hover:border-amber-500/40 transition-all">
-          <div className="flex items-center justify-between text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-            <span>Parking Alerts</span>
-            <span className="p-2 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600">
-              <AlertTriangle className="h-4 w-4" />
-            </span>
+        <div className="bg-card border border-border rounded-xl p-4 space-y-2">
+          <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
+            <span>Parking alerts</span>
+            <AlertTriangle className="h-4 w-4 text-amber-500" />
           </div>
-          <div className="space-y-1">
-            <div className="text-3xl font-black text-foreground">{alerts.length}</div>
-            <div className="text-xs">
+          <div>
+            <div className="text-2xl font-mono font-bold text-foreground">{alerts.length}</div>
+            <div className="text-xs mt-0.5">
               {pendingAlerts > 0 ? (
-                <span className="text-amber-600 font-semibold flex items-center gap-1">
-                  <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse" />
+                <span className="text-amber-600 font-medium">
                   {pendingAlerts} require action
                 </span>
               ) : (
-                <span className="text-emerald-600 font-medium flex items-center gap-1">
-                  <Check className="h-3.5 w-3.5" /> All spots clear
+                <span className="text-emerald-600 font-medium">
+                  All spots clear
                 </span>
               )}
             </div>
@@ -219,74 +205,72 @@ export default function DashboardOverviewPage() {
         </div>
 
         {/* Card 4: Unread Notifications */}
-        <div className="bg-card border border-border/80 rounded-2xl p-5 space-y-3 shadow-sm hover:border-purple-500/40 transition-all">
-          <div className="flex items-center justify-between text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-            <span>Push Notifications</span>
-            <span className="p-2 rounded-xl bg-purple-50 dark:bg-purple-950/60 text-purple-600">
-              <Bell className="h-4 w-4" />
-            </span>
+        <div className="bg-card border border-border rounded-xl p-4 space-y-2">
+          <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
+            <span>Push notifications</span>
+            <Bell className="h-4 w-4 text-muted-foreground" />
           </div>
-          <div className="space-y-1">
-            <div className="text-3xl font-black text-foreground">
+          <div>
+            <div className="text-2xl font-mono font-bold text-foreground">
               {notifications.filter((n) => !n.is_read).length}
             </div>
-            <div className="text-xs text-muted-foreground">
-              <span>Realtime event dispatch</span>
+            <div className="text-xs text-muted-foreground mt-0.5">
+              Realtime event dispatch
             </div>
           </div>
         </div>
       </div>
 
       {/* Main Grid: Fleet Cards on Left, Recent Alerts Feed on Right */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column: My Registered Fleet */}
-        <div className="lg:col-span-7 space-y-4">
+        <div className="lg:col-span-7 space-y-3">
           <div className="flex items-center justify-between">
-            <h2 className="text-base font-bold text-foreground">Active Vehicle Fleet</h2>
+            <h2 className="text-sm font-semibold text-foreground">Active vehicle fleet</h2>
             <Link
               href="/dashboard/vehicles"
-              className="text-xs text-emerald-600 hover:underline flex items-center gap-1 font-semibold"
+              className="text-xs text-emerald-600 hover:underline flex items-center gap-1 font-medium"
             >
-              Manage all ({vehicles.length}) <ArrowRight className="h-3.5 w-3.5" />
+              Manage all ({vehicles.length}) <ArrowRight className="h-3 w-3" />
             </Link>
           </div>
 
           {vehicles.length === 0 ? (
-            <div className="bg-card border border-border/80 border-dashed rounded-3xl p-10 text-center space-y-3">
-              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600">
-                <Car className="h-7 w-7" />
+            <div className="bg-card border border-border border-dashed rounded-xl p-10 text-center space-y-3">
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-muted text-muted-foreground">
+                <Car className="h-6 w-6" />
               </div>
-              <h3 className="text-sm font-bold text-foreground">No vehicles registered yet</h3>
+              <h3 className="text-sm font-semibold text-foreground">No vehicles registered yet</h3>
               <p className="text-xs text-muted-foreground max-w-sm mx-auto leading-relaxed">
-                Add your car, scooter, or motorcycle to generate a permanent dynamic QR code sticker.
+                Add your vehicle to generate a permanent dynamic QR code sticker.
               </p>
               <Link href="/dashboard/vehicles/new">
                 <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs mt-2">
-                  <Plus className="mr-1 h-3.5 w-3.5" /> Register Your First Vehicle
+                  <Plus className="mr-1 h-3.5 w-3.5" /> Register first vehicle
                 </Button>
               </Link>
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-2.5">
               {vehicles.slice(0, 4).map((vehicle) => (
                 <div
                   key={vehicle.id}
-                  className="bg-card border border-border/80 rounded-2xl p-4 flex items-center justify-between hover:border-emerald-500/40 transition-all shadow-sm group"
+                  className="bg-card border border-border rounded-xl p-3.5 flex items-center justify-between"
                 >
-                  <div className="flex items-center gap-3.5">
-                    <div className="h-11 w-11 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-foreground font-bold shadow-inner group-hover:scale-105 transition-transform">
-                      <Car className="h-5 w-5 text-emerald-600" />
+                  <div className="flex items-center gap-3">
+                    <div className="h-9 w-9 rounded-lg bg-muted flex items-center justify-center text-foreground font-bold">
+                      <Car className="h-4 w-4 text-emerald-600" />
                     </div>
                     <div>
-                      <div className="text-sm font-bold text-foreground">
+                      <div className="text-xs font-semibold text-foreground">
                         {vehicle.brand} {vehicle.model}
                       </div>
-                      <div className="text-xs font-mono font-bold text-emerald-700 dark:text-emerald-400">
-                        {vehicle.registration_number} • <span className="text-muted-foreground font-normal">{vehicle.color}</span>
+                      <div className="text-[11px] font-mono text-muted-foreground">
+                        {vehicle.registration_number} / {vehicle.color}
                       </div>
                       {vehicle.parking_location && (
-                        <div className="text-[11px] text-muted-foreground flex items-center gap-1 mt-0.5">
-                          <MapPin className="h-3 w-3 text-slate-400" />
+                        <div className="text-[10px] text-muted-foreground flex items-center gap-1 mt-0.5">
+                          <MapPin className="h-3 w-3" />
                           <span>{vehicle.parking_location}</span>
                         </div>
                       )}
@@ -296,12 +280,12 @@ export default function DashboardOverviewPage() {
                   <div className="flex items-center gap-2">
                     <Badge
                       variant={vehicle.status === "active" ? "success" : "secondary"}
-                      className="text-[10px]"
+                      className="text-[10px] font-mono capitalize"
                     >
                       {vehicle.status}
                     </Badge>
                     <Link href={`/dashboard/vehicles/${vehicle.id}`}>
-                      <Button variant="outline" size="sm" className="text-xs h-8">
+                      <Button variant="outline" size="sm" className="text-xs h-7 px-2.5">
                         Configure
                       </Button>
                     </Link>
@@ -313,38 +297,38 @@ export default function DashboardOverviewPage() {
         </div>
 
         {/* Right Column: Live Parking Alert Dispatch */}
-        <div className="lg:col-span-5 space-y-4">
+        <div className="lg:col-span-5 space-y-3">
           <div className="flex items-center justify-between">
-            <h2 className="text-base font-bold text-foreground">Recent Parking Alerts</h2>
+            <h2 className="text-sm font-semibold text-foreground">Recent parking alerts</h2>
             <Link
               href="/dashboard/alerts"
-              className="text-xs text-emerald-600 hover:underline flex items-center gap-1 font-semibold"
+              className="text-xs text-emerald-600 hover:underline flex items-center gap-1 font-medium"
             >
-              Alerts centre <ArrowRight className="h-3.5 w-3.5" />
+              Alerts centre <ArrowRight className="h-3 w-3" />
             </Link>
           </div>
 
           {alerts.length === 0 ? (
-            <div className="bg-card border border-border/80 rounded-3xl p-8 text-center space-y-2">
-              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 mb-2">
-                <ShieldCheck className="h-6 w-6" />
+            <div className="bg-card border border-border rounded-xl p-8 text-center space-y-2">
+              <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-emerald-600 mb-2">
+                <ShieldCheck className="h-5 w-5" />
               </div>
-              <p className="text-xs font-bold text-foreground">No Active Parking Alerts</p>
+              <p className="text-xs font-medium text-foreground">No active parking alerts</p>
               <p className="text-[11px] text-muted-foreground max-w-xs mx-auto leading-relaxed">
                 Your vehicles have no reported issues. Alerts sent by passersby will appear here in real time.
               </p>
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-2.5">
               {alerts.map((alert) => (
                 <div
                   key={alert.id}
-                  className="bg-card border border-border/80 rounded-2xl p-4 space-y-2.5 shadow-sm"
+                  className="bg-card border border-border rounded-xl p-3.5 space-y-2"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                    <span className="text-xs font-medium text-foreground flex items-center gap-1.5">
                       <AlertTriangle className="h-3.5 w-3.5 text-amber-500" />
-                      {alert.category.replace(/_/g, " ").toUpperCase()}
+                      <span>{alert.category.replace(/_/g, " ")}</span>
                     </span>
                     <span className="text-[10px] text-muted-foreground font-mono">
                       {formatTimeAgo(alert.created_at)}
@@ -352,18 +336,18 @@ export default function DashboardOverviewPage() {
                   </div>
 
                   {alert.custom_message && (
-                    <div className="bg-muted/40 p-2.5 rounded-xl border border-border text-xs text-foreground italic">
+                    <div className="bg-muted p-2 rounded text-xs text-foreground italic">
                       &ldquo;{alert.custom_message}&rdquo;
                     </div>
                   )}
 
-                  <div className="flex items-center justify-between text-[11px] pt-1 border-t border-border/50 text-muted-foreground">
-                    <span className="font-mono font-bold text-foreground">
-                      {alert.vehicle?.registration_number || "Car"}
+                  <div className="flex items-center justify-between text-[11px] pt-1 border-t border-border text-muted-foreground">
+                    <span className="font-mono font-medium text-foreground">
+                      {alert.vehicle?.registration_number || "Vehicle"}
                     </span>
                     <Badge
                       variant={alert.status === "resolved" ? "success" : "warning"}
-                      className="text-[10px]"
+                      className="text-[10px] font-mono capitalize"
                     >
                       {alert.status}
                     </Badge>

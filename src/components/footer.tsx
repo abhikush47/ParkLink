@@ -1,10 +1,10 @@
 import React from "react";
 import Link from "next/link";
-import { ShieldCheck, Heart } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="border-t border-border bg-slate-50 dark:bg-slate-950/50 py-12 px-4 sm:px-8">
+    <footer className="border-t border-border bg-card py-12 px-4 sm:px-8">
       <div className="container max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
         {/* Brand */}
         <div className="space-y-3 md:col-span-1">
@@ -13,41 +13,40 @@ export function Footer() {
               P
             </div>
             <span className="text-lg font-bold text-foreground">
-              Park<span className="text-emerald-600">Link</span>
+              Park<span className="text-emerald-500">Link</span>
             </span>
           </div>
           <p className="text-xs text-muted-foreground leading-relaxed">
-            Your Vehicle. One Scan. Instant Connection. Dynamic QR-based smart parking assistance
-            and vehicle contact platform.
+            Your vehicle. One scan. Instant connection. Dynamic QR-based vehicle contact and parking alert platform.
           </p>
-          <div className="flex items-center gap-1.5 text-xs text-emerald-700 dark:text-emerald-400 font-medium">
+          <div className="flex items-center gap-1.5 text-xs text-emerald-600 dark:text-emerald-400 font-medium">
             <ShieldCheck className="h-4 w-4" />
-            <span>Privacy-First Architecture</span>
+            <span>Privacy-first architecture</span>
           </div>
         </div>
 
         {/* Product Links */}
         <div className="space-y-2.5">
-          <h4 className="text-xs font-bold uppercase tracking-wider text-foreground">Product</h4>
+          <h4 className="text-xs font-semibold text-foreground">Product</h4>
           <ul className="space-y-2 text-xs text-muted-foreground">
             <li>
-              <Link href="#how-it-works" className="hover:text-foreground transition-colors">
-                How It Works
+              <Link href="#how-it-works" className="hover:text-foreground transition-colors duration-150">
+                How it works
               </Link>
             </li>
             <li>
-              <Link href="#features" className="hover:text-foreground transition-colors">
-                Smart Parking Alerts
+              <Link href="#features" className="hover:text-foreground transition-colors duration-150">
+                Parking alerts
               </Link>
             </li>
             <li>
-              <Link href="#institutions" className="hover:text-foreground transition-colors">
-                Institutions & Campuses
+              <Link href="#institutions" className="hover:text-foreground transition-colors duration-150">
+                Campuses and societies
               </Link>
             </li>
             <li>
-              <Link href="/dashboard/qr" className="hover:text-foreground transition-colors">
-                Dynamic QR Stickers
+              <Link href="/dashboard/qr" className="hover:text-foreground transition-colors duration-150">
+                Dynamic QR studio
               </Link>
             </li>
           </ul>
@@ -55,26 +54,26 @@ export function Footer() {
 
         {/* Solutions & Resources */}
         <div className="space-y-2.5">
-          <h4 className="text-xs font-bold uppercase tracking-wider text-foreground">Solutions</h4>
+          <h4 className="text-xs font-semibold text-foreground">Solutions</h4>
           <ul className="space-y-2 text-xs text-muted-foreground">
             <li>
-              <Link href="#institutions" className="hover:text-foreground transition-colors">
-                Universities & Colleges
+              <Link href="#institutions" className="hover:text-foreground transition-colors duration-150">
+                Universities and colleges
               </Link>
             </li>
             <li>
-              <Link href="#institutions" className="hover:text-foreground transition-colors">
-                Residential Societies
+              <Link href="#institutions" className="hover:text-foreground transition-colors duration-150">
+                Residential societies
               </Link>
             </li>
             <li>
-              <Link href="#institutions" className="hover:text-foreground transition-colors">
-                Corporate IT Parks
+              <Link href="#institutions" className="hover:text-foreground transition-colors duration-150">
+                Commercial IT parks
               </Link>
             </li>
             <li>
-              <Link href="/contact" className="hover:text-foreground transition-colors">
-                Custom Deployments
+              <Link href="/contact" className="hover:text-foreground transition-colors duration-150">
+                Custom deployments
               </Link>
             </li>
           </ul>
@@ -82,26 +81,26 @@ export function Footer() {
 
         {/* Legal & Privacy */}
         <div className="space-y-2.5">
-          <h4 className="text-xs font-bold uppercase tracking-wider text-foreground">Legal</h4>
+          <h4 className="text-xs font-semibold text-foreground">Legal</h4>
           <ul className="space-y-2 text-xs text-muted-foreground">
             <li>
-              <Link href="/privacy" className="hover:text-foreground transition-colors">
-                Privacy Policy
+              <Link href="/privacy" className="hover:text-foreground transition-colors duration-150">
+                Privacy policy
               </Link>
             </li>
             <li>
-              <Link href="/terms" className="hover:text-foreground transition-colors">
-                Terms of Service
+              <Link href="/terms" className="hover:text-foreground transition-colors duration-150">
+                Terms of service
               </Link>
             </li>
             <li>
-              <Link href="/contact" className="hover:text-foreground transition-colors">
-                Support & Contact
+              <Link href="/contact" className="hover:text-foreground transition-colors duration-150">
+                Support and contact
               </Link>
             </li>
             <li>
-              <Link href="/admin" className="hover:text-foreground transition-colors">
-                Staff Portal
+              <Link href="/admin" className="hover:text-foreground transition-colors duration-150">
+                Staff console
               </Link>
             </li>
           </ul>
@@ -109,12 +108,9 @@ export function Footer() {
       </div>
 
       <div className="container max-w-7xl mx-auto mt-10 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between text-xs text-muted-foreground gap-3">
-        <p>© {new Date().getFullYear()} ParkLink Technologies Inc. All rights reserved.</p>
-        <p className="flex items-center gap-1">
-          Engineered for safer communities & hassle-free parking.
-        </p>
+        <p>© {new Date().getFullYear()} ParkLink Technologies. Dynamic vehicle identity infrastructure.</p>
+        <p>Engineered for safe parking and direct driver resolution.</p>
       </div>
     </footer>
   );
 }
-

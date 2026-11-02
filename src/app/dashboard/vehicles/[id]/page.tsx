@@ -3,11 +3,9 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
 import {
   ArrowLeft,
   Car,
-  QrCode,
   Shield,
   Save,
   Trash2,
@@ -15,10 +13,10 @@ import {
   Phone,
   MessageCircle,
   MessageSquare,
-  AlertTriangle,
   Lock,
   Eye,
-  CheckCircle2,
+  Check,
+  X,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -151,19 +149,18 @@ export default function VehicleDetailPage() {
       const { error } = await supabase
         .from("vehicles")
         .update({
-          brand,
-          model,
-          color,
+          brand: brand.trim(),
+          model: model.trim(),
+          color: color.trim(),
           vehicle_type: vehicleType,
           status,
-          parking_location: parkingLocation || null,
-          description: description || null,
-          updated_at: new Date().toISOString(),
+          parking_location: parkingLocation.trim() || null,
+          description: description.trim() || null,
         })
         .eq("id", vehicleId);
 
       if (error) throw error;
-      toast.success("Vehicle details updated successfully!");
+      toast.success("Vehicle details updated");
     } catch (err: any) {
       toast.error(err.message || "Failed to update vehicle");
     } finally {
@@ -184,16 +181,15 @@ export default function VehicleDetailPage() {
           enable_anonymous_messages: enableAnonMsg,
           enable_parking_alerts: enableAlerts,
           temporary_privacy_mode: tempPrivacy,
-          alternate_contact_name: altName || null,
-          alternate_contact_phone: altPhone || null,
-          updated_at: new Date().toISOString(),
+          alternate_contact_name: altName.trim() || null,
+          alternate_contact_phone: altPhone.trim() || null,
         })
         .eq("vehicle_id", vehicleId);
 
       if (error) throw error;
-      toast.success("Privacy and contact settings updated! Active on your QR code immediately.");
+      toast.success("Privacy and contact preferences synced");
     } catch (err: any) {
-      toast.error(err.message || "Failed to update privacy settings");
+      toast.error(err.message || "Failed to update preferences");
     } finally {
       setIsSavingPrivacy(false);
     }
@@ -218,110 +214,102 @@ export default function VehicleDetailPage() {
     return (
       <div className="space-y-6">
         <Skeleton className="h-8 w-48" />
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <Skeleton className="lg:col-span-8 h-96 rounded-2xl" />
-          <Skeleton className="lg:col-span-4 h-96 rounded-2xl" />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <Skeleton className="lg:col-span-7 h-96 rounded-xl" />
+          <Skeleton className="lg:col-span-5 h-96 rounded-xl" />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Back button */}
       <div>
         <Link
           href="/dashboard/vehicles"
-          className="inline-flex items-center text-xs text-muted-foreground hover:text-foreground font-semibold"
+          className="inline-flex items-center text-xs text-muted-foreground hover:text-foreground font-medium"
         >
-          <ArrowLeft className="mr-1.5 h-3.5 w-3.5" /> Back to My Vehicles
+          <ArrowLeft className="mr-1.5 h-3.5 w-3.5" /> Back to vehicles
         </Link>
       </div>
 
-      {/* Header */}
-      <div className="relative overflow-hidden rounded-3xl border border-emerald-500/20 bg-gradient-to-br from-emerald-950/40 via-card to-card p-6 md:p-8 backdrop-blur-xl">
-        <div className="absolute -right-16 -top-16 h-64 w-64 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-          <div className="space-y-3">
-            <div className="flex flex-wrap items-center gap-2">
-              <div className="relative inline-flex items-center rounded-xl border border-slate-700 bg-slate-900/90 px-3 py-1.5 shadow-inner">
-                <div className="flex items-center gap-2">
-                  <div className="flex flex-col items-center justify-center bg-blue-700 text-white text-[8px] font-bold px-1 py-0.5 rounded leading-tight">
-                    <span>IND</span>
-                  </div>
-                  <span className="font-mono text-base font-extrabold tracking-wider text-slate-100 uppercase">
-                    {vehicle.registration_number}
-                  </span>
-                </div>
-              </div>
-
-              <Badge
-                variant={status === "active" ? "success" : "secondary"}
-                className="text-xs font-mono capitalize"
-              >
-                {status}
-              </Badge>
-
-              <span className="text-xs text-muted-foreground font-mono">
-                {vehicleType} • {color}
+      {/* Header Banner - Console Minimal */}
+      <div className="rounded-2xl border border-border bg-card p-6 md:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+        <div className="space-y-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="inline-flex items-center rounded-lg border border-border bg-muted px-2.5 py-1">
+              <span className="font-mono text-xs font-bold text-foreground">
+                {vehicle.registration_number}
               </span>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
-              {brand} {model}
-            </h1>
-            <p className="text-xs sm:text-sm text-muted-foreground max-w-xl">
-              Configure telemetry, driver contact permissions, and emergency parking alert responders.
-            </p>
+            <Badge
+              variant={status === "active" ? "success" : "secondary"}
+              className="text-xs font-mono capitalize"
+            >
+              {status}
+            </Badge>
+
+            <span className="text-xs text-muted-foreground font-mono">
+              {vehicleType} / {color}
+            </span>
           </div>
 
-          <div className="flex items-center gap-3">
-            {qrCode && (
-              <Link href={`/v/${qrCode.token}`} target="_blank">
-                <Button variant="outline" className="text-xs font-semibold rounded-xl border-border/80 hover:bg-muted">
-                  <ExternalLink className="mr-1.5 h-3.5 w-3.5 text-emerald-400" /> Public Pass
-                </Button>
-              </Link>
-            )}
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={() => setDeleteModalOpen(true)}
-              className="h-10 px-3 rounded-xl bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/30"
-              title="Delete Vehicle"
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
-          </div>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+            {brand} {model}
+          </h1>
+          <p className="text-xs sm:text-sm text-muted-foreground max-w-xl">
+            Configure driver contact permissions, parking alert responders, and manage your dynamic sticker.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2">
+          {qrCode && (
+            <Link href={`/v/${qrCode.token}`} target="_blank">
+              <Button variant="outline" size="sm" className="text-xs">
+                <ExternalLink className="mr-1.5 h-3.5 w-3.5 text-emerald-600" /> Public pass
+              </Button>
+            </Link>
+          )}
+          <Button
+            variant="destructive"
+            size="sm"
+            onClick={() => setDeleteModalOpen(true)}
+            className="h-9 px-3"
+            title="Delete Vehicle"
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
         </div>
       </div>
 
-      {/* Live Public Simulator Pill Bar */}
-      <div className="rounded-2xl border border-border bg-card p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+      {/* Scanner View Simulator Bar */}
+      <div className="rounded-xl border border-border bg-card p-4 flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-2 text-xs">
-          <Eye className="h-4 w-4 text-emerald-400 shrink-0" />
-          <span className="font-semibold text-foreground">Active Public Scanner View:</span>
-          <span className="text-muted-foreground">What a stranger sees right now when scanning:</span>
+          <Eye className="h-4 w-4 text-emerald-600 shrink-0" />
+          <span className="font-medium text-foreground">Active public view:</span>
+          <span className="text-muted-foreground">What a stranger sees right now when scanning</span>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
           {tempPrivacy ? (
             <Badge variant="destructive" className="text-[10px]">
-              🔒 Emergency Privacy Active (All Contacts Muted)
+              Privacy mute active (contacts hidden)
             </Badge>
           ) : (
             <>
               <Badge variant={showPhone ? "success" : "secondary"} className="text-[10px]">
-                {showPhone ? "✓ Direct Call" : "✕ Call Hidden"}
+                {showPhone ? "Call enabled" : "Call hidden"}
               </Badge>
               <Badge variant={showWhatsApp ? "success" : "secondary"} className="text-[10px]">
-                {showWhatsApp ? "✓ WhatsApp" : "✕ WhatsApp Hidden"}
+                {showWhatsApp ? "WhatsApp enabled" : "WhatsApp hidden"}
               </Badge>
               <Badge variant={enableAlerts ? "success" : "secondary"} className="text-[10px]">
-                {enableAlerts ? "✓ 1-Tap Alerts" : "✕ Alerts Off"}
+                {enableAlerts ? "Alerts enabled" : "Alerts disabled"}
               </Badge>
               <Badge variant={enableAnonMsg ? "success" : "secondary"} className="text-[10px]">
-                {enableAnonMsg ? "✓ Masked Chat" : "✕ Chat Off"}
+                {enableAnonMsg ? "Masked chat enabled" : "Chat disabled"}
               </Badge>
             </>
           )}
@@ -329,39 +317,39 @@ export default function VehicleDetailPage() {
       </div>
 
       {/* Main Grid: Forms on left, Dynamic QR on right */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column: Vehicle Details Form & Privacy Settings */}
-        <div className="lg:col-span-7 space-y-8">
+        <div className="lg:col-span-7 space-y-6">
           {/* Edit Information Form */}
-          <form onSubmit={handleSaveInfo} className="bg-card border border-border rounded-2xl p-6 shadow-sm space-y-4">
-            <h2 className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-              <Car className="h-4 w-4 text-emerald-600" /> Vehicle Information
+          <form onSubmit={handleSaveInfo} className="bg-card border border-border rounded-xl p-6 space-y-4">
+            <h2 className="text-sm font-semibold text-foreground flex items-center gap-2">
+              <Car className="h-4 w-4 text-emerald-600" /> Vehicle details
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="text-xs font-semibold text-foreground block mb-1">Brand</label>
+                <label className="text-xs font-medium text-foreground block mb-1">Brand</label>
                 <Input value={brand} onChange={(e) => setBrand(e.target.value)} required />
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-foreground block mb-1">Model</label>
+                <label className="text-xs font-medium text-foreground block mb-1">Model</label>
                 <Input value={model} onChange={(e) => setModel(e.target.value)} required />
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
-                <label className="text-xs font-semibold text-foreground block mb-1">Color</label>
+                <label className="text-xs font-medium text-foreground block mb-1">Color</label>
                 <Input value={color} onChange={(e) => setColor(e.target.value)} required />
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-foreground block mb-1">Type</label>
+                <label className="text-xs font-medium text-foreground block mb-1">Type</label>
                 <select
                   value={vehicleType}
                   onChange={(e: any) => setVehicleType(e.target.value)}
-                  className="w-full text-xs bg-background border border-input rounded-md px-3 py-2 text-foreground focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                  className="w-full text-xs bg-muted border border-border rounded-md px-3 py-2 text-foreground focus:outline-none"
                 >
                   <option value="Car">Car</option>
                   <option value="SUV">SUV</option>
@@ -374,14 +362,14 @@ export default function VehicleDetailPage() {
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-foreground block mb-1">Status</label>
+                <label className="text-xs font-medium text-foreground block mb-1">Status</label>
                 <select
                   value={status}
                   onChange={(e: any) => setStatus(e.target.value)}
-                  className="w-full text-xs bg-background border border-input rounded-md px-3 py-2 text-foreground focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                  className="w-full text-xs bg-muted border border-border rounded-md px-3 py-2 text-foreground focus:outline-none"
                 >
                   <option value="active">Active</option>
-                  <option value="inactive">Temporarily Inactive</option>
+                  <option value="inactive">Temporarily inactive</option>
                   <option value="sold">Sold</option>
                   <option value="suspended">Suspended</option>
                 </select>
@@ -389,8 +377,8 @@ export default function VehicleDetailPage() {
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-foreground block mb-1">
-                Parking Location / Bay
+              <label className="text-xs font-medium text-foreground block mb-1">
+                Parking location or bay
               </label>
               <Input
                 value={parkingLocation}
@@ -400,68 +388,65 @@ export default function VehicleDetailPage() {
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-foreground block mb-1">
-                Description / Note
+              <label className="text-xs font-medium text-foreground block mb-1">
+                Description note
               </label>
               <textarea
                 rows={2}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Identifying marks or parking note"
-                className="w-full text-xs rounded-lg border border-input bg-background p-2.5 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                className="w-full text-xs rounded-lg border border-border bg-muted p-2.5 text-foreground placeholder:text-muted-foreground focus:outline-none"
               />
             </div>
 
             <div className="pt-2 flex justify-end">
               <Button type="submit" isLoading={isSavingInfo} className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs">
-                <Save className="mr-1.5 h-3.5 w-3.5" /> Save Changes
+                <Save className="mr-1.5 h-3.5 w-3.5" /> Save changes
               </Button>
             </div>
           </form>
 
           {/* Privacy & Contact Settings Form */}
-          <form onSubmit={handleSavePrivacy} className="bg-card border border-border rounded-2xl p-6 shadow-sm space-y-5">
+          <form onSubmit={handleSavePrivacy} className="bg-card border border-border rounded-xl p-6 space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-                <Shield className="h-4 w-4 text-emerald-600" /> Contact & Privacy Controls
+              <h2 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                <Shield className="h-4 w-4 text-emerald-600" /> Contact and privacy controls
               </h2>
-              <span className="text-[10px] text-emerald-700 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full font-medium">
-                Live Cloud Sync
+              <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-mono">
+                Live sync
               </span>
             </div>
 
             <p className="text-xs text-muted-foreground leading-relaxed">
-              Configure what happens when someone scans your vehicle&apos;s QR code. Updates take effect
-              instantly without needing to print a new sticker.
+              Configure what happens when someone scans your vehicle QR code. Updates apply immediately without re-printing.
             </p>
 
             {/* Toggle list */}
-            <div className="space-y-3">
-              {/* Toggle 1: Direct Phone */}
-              <label className="flex items-center justify-between p-3.5 rounded-xl border border-border hover:bg-muted/30 cursor-pointer transition-colors">
+            <div className="space-y-2.5">
+              <label className="flex items-center justify-between p-3 rounded-lg border border-border bg-muted/30 cursor-pointer">
                 <div className="space-y-0.5 pr-4">
-                  <div className="text-xs font-semibold text-foreground flex items-center gap-2">
+                  <div className="text-xs font-medium text-foreground flex items-center gap-2">
                     <Phone className="h-4 w-4 text-emerald-600" />
-                    <span>Show Direct Call Button</span>
+                    <span>Show direct call button</span>
                   </div>
                   <div className="text-[11px] text-muted-foreground">
-                    Allows visitors to call your primary or alternate number directly via telephone link.
+                    Allows visitors to call your primary or alternate number directly.
                   </div>
                 </div>
                 <input
                   type="checkbox"
                   checked={showPhone}
                   onChange={(e) => setShowPhone(e.target.checked)}
-                  className="h-4 w-4 rounded text-emerald-600 focus:ring-emerald-500"
+                  className="h-4 w-4 rounded text-emerald-600"
                 />
               </label>
 
-              {/* Toggle 2: WhatsApp */}
-              <label className="flex items-center justify-between p-3.5 rounded-xl border border-border hover:bg-muted/30 cursor-pointer transition-colors">
+              <label className="flex items-center justify-between p-3 rounded-lg border border-border bg-muted/30 cursor-pointer">
                 <div className="space-y-0.5 pr-4">
-                  <div className="text-xs font-semibold text-foreground flex items-center gap-2">
-                    <MessageCircle className="h-4 w-4 text-green-600" />
-                    <span>Show WhatsApp Contact Link</span>
+                  <div className="text-xs font-medium text-foreground flex items-center gap-2">
+                    <MessageCircle className="h-4 w-4 text-emerald-600" />
+                    <span>Show WhatsApp contact link</span>
                   </div>
                   <div className="text-[11px] text-muted-foreground">
                     Opens WhatsApp chat with pre-filled vehicle details.
@@ -471,83 +456,80 @@ export default function VehicleDetailPage() {
                   type="checkbox"
                   checked={showWhatsApp}
                   onChange={(e) => setShowWhatsApp(e.target.checked)}
-                  className="h-4 w-4 rounded text-emerald-600 focus:ring-emerald-500"
+                  className="h-4 w-4 rounded text-emerald-600"
                 />
               </label>
 
-              {/* Toggle 3: Parking Alerts */}
-              <label className="flex items-center justify-between p-3.5 rounded-xl border border-border hover:bg-muted/30 cursor-pointer transition-colors">
+              <label className="flex items-center justify-between p-3 rounded-lg border border-border bg-muted/30 cursor-pointer">
                 <div className="space-y-0.5 pr-4">
-                  <div className="text-xs font-semibold text-foreground flex items-center gap-2">
-                    <AlertTriangle className="h-4 w-4 text-amber-500" />
-                    <span>Enable 1-Tap Parking Alerts</span>
+                  <div className="text-xs font-medium text-foreground flex items-center gap-2">
+                    <Car className="h-4 w-4 text-emerald-600" />
+                    <span>Enable 1-tap parking alerts</span>
                   </div>
                   <div className="text-[11px] text-muted-foreground">
-                    Allows visitors to report blocking vehicles, open windows, or lights on without calling.
+                    Enables visitors to send standard parking alerts like &quot;Vehicle blocking drive&quot;.
                   </div>
                 </div>
                 <input
                   type="checkbox"
                   checked={enableAlerts}
                   onChange={(e) => setEnableAlerts(e.target.checked)}
-                  className="h-4 w-4 rounded text-emerald-600 focus:ring-emerald-500"
+                  className="h-4 w-4 rounded text-emerald-600"
                 />
               </label>
 
-              {/* Toggle 4: Anonymous Messages */}
-              <label className="flex items-center justify-between p-3.5 rounded-xl border border-border hover:bg-muted/30 cursor-pointer transition-colors">
+              <label className="flex items-center justify-between p-3 rounded-lg border border-border bg-muted/30 cursor-pointer">
                 <div className="space-y-0.5 pr-4">
-                  <div className="text-xs font-semibold text-foreground flex items-center gap-2">
-                    <MessageSquare className="h-4 w-4 text-slate-700 dark:text-slate-300" />
-                    <span>Enable Anonymous Contact Relay</span>
+                  <div className="text-xs font-medium text-foreground flex items-center gap-2">
+                    <MessageSquare className="h-4 w-4 text-muted-foreground" />
+                    <span>Enable anonymous contact relay</span>
                   </div>
                   <div className="text-[11px] text-muted-foreground">
-                    Allows visitor messages to reach your notification centre without disclosing numbers.
+                    Allows visitor messages to reach your inbox without revealing phone numbers.
                   </div>
                 </div>
                 <input
                   type="checkbox"
                   checked={enableAnonMsg}
                   onChange={(e) => setEnableAnonMsg(e.target.checked)}
-                  className="h-4 w-4 rounded text-emerald-600 focus:ring-emerald-500"
+                  className="h-4 w-4 rounded text-emerald-600"
                 />
               </label>
 
-              {/* Toggle 5: Temporary Privacy Mode */}
-              <label className="flex items-center justify-between p-3.5 rounded-xl border border-amber-300/40 bg-amber-50/30 dark:bg-amber-950/20 cursor-pointer">
+              <label className="flex items-center justify-between p-3 rounded-lg border border-amber-300/40 bg-amber-500/10 cursor-pointer">
                 <div className="space-y-0.5 pr-4">
-                  <div className="text-xs font-semibold text-amber-800 dark:text-amber-300 flex items-center gap-2">
-                    <Lock className="h-4 w-4" />
-                    <span>Temporary Privacy Mode (Emergency Mute)</span>
+                  <div className="text-xs font-medium text-foreground flex items-center gap-2">
+                    <Lock className="h-4 w-4 text-amber-600" />
+                    <span>Temporary privacy mode (emergency mute)</span>
                   </div>
                   <div className="text-[11px] text-muted-foreground">
-                    Temporarily disables all public contact buttons while keeping the vehicle profile active.
+                    Temporarily mutes all public contact buttons while keeping vehicle registered.
                   </div>
                 </div>
                 <input
                   type="checkbox"
                   checked={tempPrivacy}
                   onChange={(e) => setTempPrivacy(e.target.checked)}
-                  className="h-4 w-4 rounded text-amber-600 focus:ring-amber-500"
+                  className="h-4 w-4 rounded text-amber-600"
                 />
               </label>
             </div>
 
             {/* Alternate Contact Person */}
             <div className="pt-2 border-t border-border space-y-3">
-              <h3 className="text-xs font-semibold text-foreground">Alternate / Emergency Contact Person</h3>
+              <h3 className="text-xs font-medium text-foreground">Alternate contact person (optional)</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[11px] text-muted-foreground block mb-1">Contact Name</label>
+                  <label className="text-[11px] text-muted-foreground block mb-1">Contact name</label>
                   <Input
                     value={altName}
                     onChange={(e) => setAltName(e.target.value)}
-                    placeholder="e.g. Spouse, Roommate, Driver"
+                    placeholder="e.g. Spouse or Co-driver"
                     className="text-xs"
                   />
                 </div>
                 <div>
-                  <label className="text-[11px] text-muted-foreground block mb-1">Contact Phone</label>
+                  <label className="text-[11px] text-muted-foreground block mb-1">Contact phone</label>
                   <Input
                     value={altPhone}
                     onChange={(e) => setAltPhone(e.target.value)}
@@ -560,7 +542,7 @@ export default function VehicleDetailPage() {
 
             <div className="pt-2 flex justify-end">
               <Button type="submit" isLoading={isSavingPrivacy} className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs">
-                <Save className="mr-1.5 h-3.5 w-3.5" /> Save Privacy Settings
+                <Save className="mr-1.5 h-3.5 w-3.5" /> Save privacy settings
               </Button>
             </div>
           </form>
@@ -588,25 +570,20 @@ export default function VehicleDetailPage() {
       {/* Delete Confirmation Dialog */}
       <Dialog open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
         <DialogHeader>
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-rose-100 text-rose-600 mb-2">
-            <Trash2 className="h-6 w-6" />
-          </div>
           <DialogTitle className="text-center">Delete {vehicle.registration_number}?</DialogTitle>
-          <DialogDescription className="text-center">
-            Are you sure you want to delete this vehicle from your account? This action cannot be
-            undone. Any issued QR stickers will immediately cease functioning.
+          <DialogDescription className="text-center text-xs">
+            Are you sure you want to delete this vehicle from your account? This action cannot be undone. Any issued stickers will cease functioning immediately.
           </DialogDescription>
         </DialogHeader>
-        <DialogFooter>
-          <Button variant="outline" onClick={() => setDeleteModalOpen(false)} disabled={isDeleting}>
+        <DialogFooter className="gap-2 sm:gap-0 mt-4">
+          <Button variant="outline" onClick={() => setDeleteModalOpen(false)} disabled={isDeleting} className="text-xs">
             Cancel
           </Button>
-          <Button variant="destructive" onClick={handleDeleteVehicle} isLoading={isDeleting}>
-            Yes, Delete Vehicle
+          <Button variant="destructive" onClick={handleDeleteVehicle} isLoading={isDeleting} className="text-xs">
+            Yes, delete vehicle
           </Button>
         </DialogFooter>
       </Dialog>
     </div>
   );
 }
-

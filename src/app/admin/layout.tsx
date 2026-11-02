@@ -52,12 +52,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="space-y-6">
           {/* Logo / Badge */}
           <div className="flex items-center gap-2.5 px-2">
-            <div className="h-9 w-9 rounded-xl bg-rose-600 flex items-center justify-center text-white font-black text-lg shadow-sm">
-              <ShieldAlert className="h-5 w-5" />
+            <div className="h-8 w-8 rounded-lg bg-rose-600 flex items-center justify-center text-white font-bold text-sm">
+              <ShieldAlert className="h-4 w-4" />
             </div>
             <div>
-              <span className="text-lg font-bold tracking-tight text-white">
-                ParkLink <span className="text-rose-500 text-xs uppercase font-mono">Admin</span>
+              <span className="text-base font-bold tracking-tight text-white">
+                ParkLink <span className="text-rose-400 text-xs font-mono">admin</span>
               </span>
               <span className="text-[10px] block text-slate-400">Super Administrator</span>
             </div>
@@ -75,9 +75,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
+                  className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition-colors duration-150 ${
                     isActive
-                      ? "bg-rose-600 text-white shadow-sm"
+                      ? "bg-rose-600 text-white font-semibold"
                       : "text-slate-400 hover:bg-slate-900 hover:text-white"
                   }`}
                 >

@@ -10,10 +10,6 @@ export default function PrivacyPage() {
       <Navbar />
       <main className="container max-w-4xl mx-auto px-4 sm:px-8 py-12 flex-1 space-y-8">
         <div className="space-y-3 pb-6 border-b border-border">
-          <div className="inline-flex items-center gap-2 text-xs font-semibold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/50 px-2.5 py-1 rounded-full">
-            <ShieldCheck className="h-4 w-4" />
-            Privacy Policy
-          </div>
           <h1 className="text-3xl font-extrabold tracking-tight text-foreground">
             ParkLink Privacy & Data Protection Policy
           </h1>

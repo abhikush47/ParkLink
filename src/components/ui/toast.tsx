@@ -82,7 +82,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
             <div
               key={t.id}
               className={cn(
-                "pointer-events-auto flex items-start gap-3 rounded-lg border bg-card p-4 shadow-lg transition-all animate-in slide-in-from-bottom-5",
+                "pointer-events-auto flex items-start gap-3 rounded-lg border bg-card p-4 shadow-lg transition-opacity duration-150 animate-in slide-in-from-bottom-5",
                 t.type === "success" && "border-emerald-500/20 bg-emerald-50/50 dark:bg-emerald-950/20",
                 t.type === "error" && "border-rose-500/20 bg-rose-50/50 dark:bg-rose-950/20",
                 t.type === "warning" && "border-amber-500/20 bg-amber-50/50 dark:bg-amber-950/20",

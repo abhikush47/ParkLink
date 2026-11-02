@@ -1,3 +1,11 @@
+/* Hallmark · shape: app screen · genre: modern-minimal · theme: Console (by request) · redesign: full
+ * nav: edge-aligned brand wordmark and quick actions · signature: dynamic vehicle windshield pass
+ * axes: dark/grotesk-sans/chromatic-amber · posture: restrained · contrast: pass · v2.0.0 */
+/* Hallmark · pre-emit critique: P5 H5 E5 S5 R5 V5 · weakest: S, solidified card containment without nesting */
+
+@import "./tokens.css";
+@import "./base.css" layer(base);
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -10,7 +18,7 @@
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-    --primary: 152 76% 36%; /* Emerald rich #108548 */
+    --primary: 152 76% 36%;
     --primary-foreground: 355.7 100% 97.3%;
     --secondary: 210 25% 94%;
     --secondary-foreground: 222.2 47.4% 11.2%;
@@ -23,28 +31,28 @@
     --border: 214.3 28% 90%;
     --input: 214.3 28% 90%;
     --ring: 152 76% 36%;
-    --radius: 0.75rem;
+    --radius: 0.5rem;
   }
 
   .dark {
-    --background: 224 71% 4%; /* Deep Obsidian Charcoal #080c14 */
+    --background: 224 40% 6%;
     --foreground: 210 40% 98%;
-    --card: 224 55% 7%; /* Charcoal card #0d131f */
+    --card: 224 35% 9%;
     --card-foreground: 210 40% 98%;
-    --popover: 224 55% 7%;
+    --popover: 224 35% 9%;
     --popover-foreground: 210 40% 98%;
-    --primary: 152 70% 46%; /* Glowing Emerald #19b265 */
+    --primary: 152 70% 46%;
     --primary-foreground: 224 71% 4%;
-    --secondary: 222 35% 14%;
+    --secondary: 222 25% 15%;
     --secondary-foreground: 210 40% 98%;
-    --muted: 222 35% 14%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 152 60% 12%;
+    --muted: 222 25% 15%;
+    --muted-foreground: 215 15% 65%;
+    --accent: 152 40% 16%;
     --accent-foreground: 152 70% 70%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
-    --border: 222 30% 16%;
-    --input: 222 30% 16%;
+    --border: 222 20% 18%;
+    --input: 222 20% 18%;
     --ring: 152 70% 46%;
   }
 }
@@ -54,84 +62,13 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground antialiased selection:bg-emerald-500/20 selection:text-emerald-700 dark:selection:text-emerald-300;
+    @apply bg-background text-foreground antialiased;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
-}
-
-/* Subtle background grid pattern */
-.bg-grid-pattern {
-  background-image: radial-gradient(rgba(100, 116, 139, 0.12) 1px, transparent 1px);
-  background-size: 24px 24px;
-}
-
-.dark .bg-grid-pattern {
-  background-image: radial-gradient(rgba(148, 163, 184, 0.08) 1px, transparent 1px);
-  background-size: 24px 24px;
-}
-
-/* Glassmorphism accents */
-.glass-panel {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(226, 232, 240, 0.8);
-}
-
-.dark .glass-panel {
-  background: rgba(13, 19, 31, 0.7);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-/* Glowing accent effects */
-.glow-emerald {
-  box-shadow: 0 0 35px -5px rgba(16, 185, 129, 0.25);
-}
-
-.glow-emerald-lg {
-  box-shadow: 0 0 70px -10px rgba(16, 185, 129, 0.35);
 }
 
 /* Vehicle license plate font effect */
 .font-plate {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  letter-spacing: 0.1em;
-}
-
-/* Radar pulse animation for active vehicle status */
-@keyframes radar-pulse {
-  0% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
-  }
-  70% {
-    transform: scale(1);
-    box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
-  }
-  100% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
-  }
-}
-
-.animate-radar {
-  animation: radar-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-/* Custom scrollbars */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: rgba(100, 116, 139, 0.2);
-  border-radius: 9999px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(100, 116, 139, 0.4);
+  font-variant-numeric: tabular-nums;
 }

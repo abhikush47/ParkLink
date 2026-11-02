@@ -36,7 +36,7 @@ export default function ForgotPasswordPage() {
       }
 
       setSubmitted(true);
-      toast.success("Password reset instructions dispatched!");
+      toast.success("Password reset link sent");
     } catch (err: any) {
       setErrorMsg(err.message || "Failed to initiate password reset");
     } finally {
@@ -45,35 +45,35 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col justify-center items-center py-12 px-4 sm:px-6">
+    <div className="min-h-screen bg-background flex flex-col justify-center items-center py-12 px-4 sm:px-6">
       <div className="w-full max-w-md space-y-6">
         <div className="text-center space-y-2">
           <Link href="/" className="inline-flex items-center gap-2">
-            <div className="h-10 w-10 rounded-xl bg-emerald-600 flex items-center justify-center text-white font-black text-xl shadow-sm">
+            <div className="h-9 w-9 rounded-lg bg-emerald-600 flex items-center justify-center text-white font-bold text-lg">
               P
             </div>
-            <span className="text-2xl font-bold tracking-tight text-foreground">
+            <span className="text-xl font-bold tracking-tight text-foreground">
               Park<span className="text-emerald-600">Link</span>
             </span>
           </Link>
-          <h2 className="text-2xl font-bold tracking-tight text-foreground">Reset Password</h2>
+          <h2 className="text-2xl font-bold tracking-tight text-foreground">Reset password</h2>
           <p className="text-xs text-muted-foreground">
             Enter your email to receive recovery instructions
           </p>
         </div>
 
-        <div className="bg-card border border-border rounded-2xl p-6 sm:p-8 shadow-sm space-y-5">
+        <div className="bg-card border border-border rounded-xl p-6 sm:p-8 space-y-4">
           {errorMsg && (
-            <div className="p-3 rounded-lg bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 text-xs text-rose-700 dark:text-rose-300 flex items-start gap-2">
+            <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-xs text-destructive flex items-start gap-2">
               <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
               <span>{errorMsg}</span>
             </div>
           )}
 
           {submitted ? (
-            <div className="text-center space-y-4 py-4">
-              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400">
-                <CheckCircle2 className="h-8 w-8" />
+            <div className="text-center space-y-3 py-4">
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-muted text-emerald-600">
+                <CheckCircle2 className="h-6 w-6" />
               </div>
               <p className="text-sm text-foreground font-semibold">Check your inbox</p>
               <p className="text-xs text-muted-foreground leading-relaxed">
@@ -83,7 +83,7 @@ export default function ForgotPasswordPage() {
               <div className="pt-2">
                 <Link href="/login">
                   <Button variant="outline" className="w-full text-xs">
-                    Return to Sign In
+                    Return to sign in
                   </Button>
                 </Link>
               </div>
@@ -91,8 +91,8 @@ export default function ForgotPasswordPage() {
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="text-xs font-semibold text-foreground block mb-1">
-                  Registered Email Address
+                <label className="text-xs font-medium text-foreground block mb-1">
+                  Registered email address
                 </label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -102,7 +102,7 @@ export default function ForgotPasswordPage() {
                     placeholder="driver@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="pl-9"
+                    className="pl-9 bg-muted"
                   />
                 </div>
               </div>
@@ -110,14 +110,14 @@ export default function ForgotPasswordPage() {
               <Button
                 type="submit"
                 isLoading={loading}
-                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold h-10"
+                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium h-9"
               >
-                Send Reset Link
+                Send reset link
               </Button>
             </form>
           )}
 
-          <div className="pt-4 border-t border-border text-center">
+          <div className="pt-3 border-t border-border text-center">
             <Link
               href="/login"
               className="inline-flex items-center text-xs text-muted-foreground hover:text-foreground font-medium"
@@ -130,4 +130,3 @@ export default function ForgotPasswordPage() {
     </div>
   );
 }
-

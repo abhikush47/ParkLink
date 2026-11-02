@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRight, Lock, Mail, User, Phone, MessageSquare, AlertCircle, CheckCircle2 } from "lucide-react";
+import { ArrowRight, Lock, Mail, User, Phone, AlertCircle, CheckCircle2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { registerSchema } from "@/lib/validations";
 import { Button } from "@/components/ui/button";
@@ -56,13 +56,11 @@ export default function RegisterPage() {
         return;
       }
 
-      // Check if email confirmation is required or if session exists immediately
       if (data.session) {
-        toast.success("Account created successfully! Welcome to ParkLink.");
+        toast.success("Account created successfully", "Welcome to ParkLink");
         router.push("/dashboard/vehicles/new");
         router.refresh();
       } else {
-        // Confirmation email required
         setVerificationSent(true);
         toast.info("Please check your email to verify your account.");
       }
@@ -76,20 +74,20 @@ export default function RegisterPage() {
 
   if (verificationSent) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col justify-center items-center py-12 px-4 sm:px-6">
-        <div className="w-full max-w-md bg-card border border-border rounded-2xl p-8 shadow-sm text-center space-y-4">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400">
-            <CheckCircle2 className="h-10 w-10" />
+      <div className="min-h-screen bg-background flex flex-col justify-center items-center py-12 px-4 sm:px-6">
+        <div className="w-full max-w-md bg-card border border-border rounded-xl p-8 text-center space-y-4">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-xl bg-muted text-emerald-600">
+            <CheckCircle2 className="h-8 w-8" />
           </div>
-          <h2 className="text-2xl font-bold text-foreground">Verify Your Email</h2>
-          <p className="text-sm text-muted-foreground leading-relaxed">
+          <h2 className="text-xl font-bold text-foreground">Verify your email</h2>
+          <p className="text-xs text-muted-foreground leading-relaxed">
             We sent a verification link to your email address. Please click the link to activate
-            your ParkLink account and begin registering your vehicles.
+            your account and start adding vehicles.
           </p>
-          <div className="pt-4">
+          <div className="pt-2">
             <Link href="/login">
-              <Button variant="outline" className="w-full">
-                Proceed to Sign In
+              <Button variant="outline" className="w-full text-xs">
+                Proceed to sign in
               </Button>
             </Link>
           </div>
@@ -99,15 +97,15 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col justify-center items-center py-12 px-4 sm:px-6">
+    <div className="min-h-screen bg-background flex flex-col justify-center items-center py-12 px-4 sm:px-6">
       <div className="w-full max-w-md space-y-6">
         {/* Header */}
         <div className="text-center space-y-2">
           <Link href="/" className="inline-flex items-center gap-2">
-            <div className="h-10 w-10 rounded-xl bg-emerald-600 flex items-center justify-center text-white font-black text-xl shadow-sm">
+            <div className="h-9 w-9 rounded-lg bg-emerald-600 flex items-center justify-center text-white font-bold text-lg">
               P
             </div>
-            <span className="text-2xl font-bold tracking-tight text-foreground">
+            <span className="text-xl font-bold tracking-tight text-foreground">
               Park<span className="text-emerald-600">Link</span>
             </span>
           </Link>
@@ -115,14 +113,14 @@ export default function RegisterPage() {
             Create your account
           </h2>
           <p className="text-xs text-muted-foreground">
-            Get instant dynamic QR codes and parking alerts for your vehicles
+            Get instant dynamic QR passes and parking assistance for your fleet
           </p>
         </div>
 
         {/* Card */}
-        <div className="bg-card border border-border rounded-2xl p-6 sm:p-8 shadow-sm space-y-5">
+        <div className="bg-card border border-border rounded-xl p-6 sm:p-8 space-y-4">
           {authError && (
-            <div className="p-3 rounded-lg bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 text-xs text-rose-700 dark:text-rose-300 flex items-start gap-2">
+            <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-xs text-destructive flex items-start gap-2">
               <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
               <span>{authError}</span>
             </div>
@@ -130,131 +128,127 @@ export default function RegisterPage() {
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-3.5">
             <div>
-              <label className="text-xs font-semibold text-foreground block mb-1">
-                Full Name
+              <label className="text-xs font-medium text-foreground block mb-1">
+                Full name
               </label>
               <div className="relative">
                 <User className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
                   {...register("full_name")}
-                  placeholder="Rahul Sharma / Alex Morgan"
-                  className="pl-9"
+                  placeholder="Rahul Sharma"
+                  className="pl-9 bg-muted"
                   autoComplete="name"
                 />
               </div>
               {errors.full_name && (
-                <p className="text-[11px] text-rose-500 mt-1">{errors.full_name.message}</p>
+                <p className="text-[11px] text-destructive mt-1">{errors.full_name.message}</p>
               )}
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-foreground block mb-1">
-                Email Address
+              <label className="text-xs font-medium text-foreground block mb-1">
+                Email address
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
                   {...register("email")}
                   type="email"
-                  placeholder="owner@example.com"
-                  className="pl-9"
+                  placeholder="driver@example.com"
+                  className="pl-9 bg-muted"
                   autoComplete="email"
                 />
               </div>
               {errors.email && (
-                <p className="text-[11px] text-rose-500 mt-1">{errors.email.message}</p>
+                <p className="text-[11px] text-destructive mt-1">{errors.email.message}</p>
               )}
-            </div>
-
-            <div>
-              <label className="text-xs font-semibold text-foreground block mb-1">
-                Primary Phone Number
-              </label>
-              <div className="relative">
-                <Phone className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  {...register("phone_number")}
-                  placeholder="+91 98765 43210"
-                  className="pl-9"
-                  autoComplete="tel"
-                />
-              </div>
-              <p className="text-[10px] text-muted-foreground mt-0.5">
-                Can be masked or hidden anytime in your privacy settings.
-              </p>
-              {errors.phone_number && (
-                <p className="text-[11px] text-rose-500 mt-1">{errors.phone_number.message}</p>
-              )}
-            </div>
-
-            <div>
-              <label className="text-xs font-semibold text-foreground block mb-1">
-                WhatsApp Number <span className="font-normal text-muted-foreground">(Optional)</span>
-              </label>
-              <div className="relative">
-                <MessageSquare className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  {...register("whatsapp_number")}
-                  placeholder="Leave empty if same as phone"
-                  className="pl-9"
-                  autoComplete="tel"
-                />
-              </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="text-xs font-semibold text-foreground block mb-1">Password</label>
+                <label className="text-xs font-medium text-foreground block mb-1">
+                  Primary phone
+                </label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <Phone className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                   <Input
-                    {...register("password")}
-                    type="password"
-                    placeholder="••••••••"
-                    className="pl-9"
-                    autoComplete="new-password"
+                    {...register("phone_number")}
+                    placeholder="+91 98765 43210"
+                    className="pl-9 bg-muted font-mono text-xs"
+                    autoComplete="tel"
                   />
                 </div>
-                {errors.password && (
-                  <p className="text-[11px] text-rose-500 mt-1">{errors.password.message}</p>
+                {errors.phone_number && (
+                  <p className="text-[11px] text-destructive mt-1">{errors.phone_number.message}</p>
                 )}
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-foreground block mb-1">
-                  Confirm Password
+                <label className="text-xs font-medium text-foreground block mb-1">
+                  WhatsApp (optional)
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <Phone className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                   <Input
-                    {...register("confirm_password")}
-                    type="password"
-                    placeholder="••••••••"
-                    className="pl-9"
-                    autoComplete="new-password"
+                    {...register("whatsapp_number")}
+                    placeholder="+91 98765 43210"
+                    className="pl-9 bg-muted font-mono text-xs"
                   />
                 </div>
-                {errors.confirm_password && (
-                  <p className="text-[11px] text-rose-500 mt-1">
-                    {errors.confirm_password.message}
-                  </p>
-                )}
               </div>
+            </div>
+
+            <div>
+              <label className="text-xs font-medium text-foreground block mb-1">
+                Password
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  {...register("password")}
+                  type="password"
+                  placeholder="••••••••"
+                  className="pl-9 bg-muted"
+                  autoComplete="new-password"
+                />
+              </div>
+              {errors.password && (
+                <p className="text-[11px] text-destructive mt-1">{errors.password.message}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="text-xs font-medium text-foreground block mb-1">
+                Confirm password
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  {...register("confirm_password")}
+                  type="password"
+                  placeholder="••••••••"
+                  className="pl-9 bg-muted"
+                  autoComplete="new-password"
+                />
+              </div>
+              {errors.confirm_password && (
+                <p className="text-[11px] text-destructive mt-1">{errors.confirm_password.message}</p>
+              )}
             </div>
 
             <Button
               type="submit"
               isLoading={isLoading}
-              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold h-10 mt-4"
+              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium h-9 mt-1"
             >
-              Register & Continue <ArrowRight className="ml-2 h-4 w-4" />
+              Create account <ArrowRight className="ml-1.5 h-4 w-4" />
             </Button>
           </form>
 
-          <div className="pt-4 border-t border-border text-center text-xs text-muted-foreground">
+          <div className="pt-3 border-t border-border text-center text-xs text-muted-foreground">
             Already have an account?{" "}
-            <Link href="/login" className="text-emerald-600 font-semibold hover:underline">
-              Sign In
+            <Link href="/login" className="text-emerald-600 dark:text-emerald-400 font-medium hover:underline">
+              Sign in
             </Link>
           </div>
         </div>
@@ -262,4 +256,3 @@ export default function RegisterPage() {
     </div>
   );
 }
-

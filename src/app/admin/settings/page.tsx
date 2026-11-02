@@ -36,9 +36,9 @@ export default function AdminSettingsPage() {
 
       <form onSubmit={handleSave} className="space-y-6">
         {/* Anti-bot rate limits */}
-        <div className="bg-slate-950 border border-slate-800 rounded-2xl p-6 space-y-4">
-          <h2 className="text-sm font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
-            <Sliders className="h-4 w-4 text-rose-500" /> Rate Limits & Anti-Abuse
+        <div className="bg-slate-950 border border-slate-800 rounded-xl p-5 space-y-4">
+          <h2 className="text-sm font-semibold text-slate-300 flex items-center gap-2">
+            <Sliders className="h-4 w-4 text-rose-500" /> Rate limits and anti-abuse
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -75,9 +75,9 @@ export default function AdminSettingsPage() {
         </div>
 
         {/* Maintenance mode */}
-        <div className="bg-slate-950 border border-slate-800 rounded-2xl p-6 space-y-4">
-          <h2 className="text-sm font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
-            <ShieldAlert className="h-4 w-4 text-amber-500" /> Platform Maintenance
+        <div className="bg-slate-950 border border-slate-800 rounded-xl p-5 space-y-4">
+          <h2 className="text-sm font-semibold text-slate-300 flex items-center gap-2">
+            <ShieldAlert className="h-4 w-4 text-amber-500" /> Platform maintenance
           </h2>
 
           <label className="flex items-center justify-between p-4 rounded-xl border border-slate-800 bg-slate-900/50 cursor-pointer">

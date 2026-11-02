@@ -2,21 +2,12 @@
 
 import React, { useEffect, useState } from "react";
 import {
-  Users,
   Search,
-  Shield,
   ShieldAlert,
-  Check,
-  X,
   Trash2,
   AlertTriangle,
   Mail,
-  UserCheck,
-  Lock,
-  Sparkles,
-  ArrowRight,
   ShieldCheck,
-  Phone,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -89,7 +80,6 @@ export default function AdminUsersPage() {
 
       if (error) throw error;
 
-      // Log admin audit
       const {
         data: { user },
       } = await supabase.auth.getUser();
@@ -153,40 +143,37 @@ export default function AdminUsersPage() {
   const userCount = users.filter((u) => u.role !== "admin").length;
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto">
-      {/* Top Banner */}
-      <div className="relative overflow-hidden rounded-3xl border border-rose-500/20 bg-gradient-to-br from-rose-950/30 via-slate-950 to-slate-950 p-6 md:p-8 backdrop-blur-xl">
-        <div className="absolute -right-16 -top-16 h-64 w-64 rounded-full bg-rose-500/10 blur-3xl pointer-events-none" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-          <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 rounded-full border border-rose-500/30 bg-rose-500/10 px-3 py-1 text-xs font-semibold text-rose-400">
-              <ShieldAlert className="h-3.5 w-3.5" />
-              <span>Super Administrator Directory & Access Control</span>
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-              User Accounts & Security
-            </h1>
-            <p className="text-xs sm:text-sm text-slate-400 max-w-2xl leading-relaxed">
-              Manage registered platform accounts, promote administrators, and enforce permanent user deletion. Deleting a user wipes their Supabase Auth credentials, vehicle fleet, and dynamic QR stickers.
-            </p>
+    <div className="space-y-6 max-w-7xl mx-auto">
+      {/* Top Banner - Console Minimal */}
+      <div className="rounded-2xl border border-slate-800 bg-slate-950 p-6 md:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+        <div className="space-y-2">
+          <div className="inline-flex items-center gap-2 rounded-md bg-slate-900 px-2.5 py-1 text-xs text-rose-400 font-mono">
+            <ShieldAlert className="h-3.5 w-3.5" />
+            <span>Super admin directory</span>
           </div>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
+            User accounts & security
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-400 max-w-2xl leading-relaxed">
+            Manage registered platform accounts, promote administrators, and enforce permanent user deletion. Deleting a user wipes their Supabase Auth credentials, vehicle fleet, and dynamic QR stickers.
+          </p>
+        </div>
 
-          <div className="flex items-center gap-3">
-            <div className="rounded-2xl border border-slate-800 bg-slate-900/60 px-4 py-3 backdrop-blur-md">
-              <div className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">
-                Total Users
-              </div>
-              <div className="text-xl font-mono font-bold text-white">
-                {users.length}
-              </div>
+        <div className="flex items-center gap-3">
+          <div className="rounded-xl border border-slate-800 bg-slate-900/60 px-4 py-3">
+            <div className="text-xs font-medium text-slate-400">
+              Total users
             </div>
-            <div className="rounded-2xl border border-slate-800 bg-slate-900/60 px-4 py-3 backdrop-blur-md">
-              <div className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">
-                Admins
-              </div>
-              <div className="text-xl font-mono font-bold text-rose-400">
-                {adminCount}
-              </div>
+            <div className="text-xl font-mono font-bold text-white">
+              {users.length}
+            </div>
+          </div>
+          <div className="rounded-xl border border-slate-800 bg-slate-900/60 px-4 py-3">
+            <div className="text-xs font-medium text-slate-400">
+              Admins
+            </div>
+            <div className="text-xl font-mono font-bold text-rose-400">
+              {adminCount}
             </div>
           </div>
         </div>
@@ -194,72 +181,72 @@ export default function AdminUsersPage() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="rounded-2xl border border-slate-800 bg-slate-950/80 p-4">
-          <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-            Total Accounts
+        <div className="rounded-xl border border-slate-800 bg-slate-950 p-4">
+          <div className="text-xs font-medium text-slate-400">
+            Total accounts
           </div>
           <div className="text-2xl font-mono font-bold text-white mt-1">
             {users.length}
           </div>
         </div>
-        <div className="rounded-2xl border border-slate-800 bg-slate-950/80 p-4">
-          <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-            Platform Admins
+        <div className="rounded-xl border border-slate-800 bg-slate-950 p-4">
+          <div className="text-xs font-medium text-slate-400">
+            Platform admins
           </div>
           <div className="text-2xl font-mono font-bold text-rose-400 mt-1">
             {adminCount}
           </div>
         </div>
-        <div className="rounded-2xl border border-slate-800 bg-slate-950/80 p-4">
-          <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-            Drivers / Owners
+        <div className="rounded-xl border border-slate-800 bg-slate-950 p-4">
+          <div className="text-xs font-medium text-slate-400">
+            Vehicle owners
           </div>
           <div className="text-2xl font-mono font-bold text-emerald-400 mt-1">
             {userCount}
           </div>
         </div>
-        <div className="rounded-2xl border border-slate-800 bg-slate-950/80 p-4">
-          <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-            Auth Service
+        <div className="rounded-xl border border-slate-800 bg-slate-950 p-4">
+          <div className="text-xs font-medium text-slate-400">
+            Auth service
           </div>
-          <div className="text-xs font-semibold text-emerald-400 mt-2 flex items-center gap-1.5">
-            <ShieldCheck className="h-4 w-4" /> Supabase Connected
+          <div className="text-xs font-medium text-emerald-400 mt-2 flex items-center gap-1.5">
+            <ShieldCheck className="h-4 w-4" /> Supabase connected
           </div>
         </div>
       </div>
 
       {/* Search Bar */}
       <div className="relative max-w-md">
-        <Search className="absolute left-3.5 top-3 h-4 w-4 text-slate-500" />
+        <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-500" />
         <Input
           placeholder="Search users by name, email, phone, role..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="pl-10 bg-slate-950 border-slate-800 text-white text-xs h-10 rounded-xl focus:border-rose-500"
+          className="pl-9 bg-slate-950 border-slate-800 text-white text-xs h-9 rounded-lg"
         />
       </div>
 
       {loading ? (
         <div className="space-y-3">
-          <Skeleton className="h-20 rounded-2xl bg-slate-800" />
-          <Skeleton className="h-20 rounded-2xl bg-slate-800" />
-          <Skeleton className="h-20 rounded-2xl bg-slate-800" />
+          <Skeleton className="h-16 rounded-xl bg-slate-800" />
+          <Skeleton className="h-16 rounded-xl bg-slate-800" />
+          <Skeleton className="h-16 rounded-xl bg-slate-800" />
         </div>
       ) : filtered.length === 0 ? (
-        <div className="bg-slate-950 border border-slate-800 rounded-3xl p-16 text-center text-slate-400 text-xs">
+        <div className="bg-slate-950 border border-slate-800 rounded-xl p-16 text-center text-slate-400 text-xs">
           No users found matching your search.
         </div>
       ) : (
-        <div className="bg-slate-950 border border-slate-800/80 rounded-3xl overflow-hidden shadow-2xl">
+        <div className="bg-slate-950 border border-slate-800 rounded-xl overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs text-slate-300">
-              <thead className="bg-slate-900/80 border-b border-slate-800 text-slate-400 uppercase font-semibold text-[11px] tracking-wider">
+              <thead className="bg-slate-900 border-b border-slate-800 text-slate-400 font-medium text-xs">
                 <tr>
-                  <th className="p-4 pl-6">User Account</th>
-                  <th className="p-4">Phone Number</th>
-                  <th className="p-4">Role</th>
-                  <th className="p-4">Registered Date</th>
-                  <th className="p-4 pr-6 text-right">Administrative Actions</th>
+                  <th className="p-3.5 pl-5">User account</th>
+                  <th className="p-3.5">Phone number</th>
+                  <th className="p-3.5">Role</th>
+                  <th className="p-3.5">Registered date</th>
+                  <th className="p-3.5 pr-5 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800/60">
@@ -270,17 +257,17 @@ export default function AdminUsersPage() {
                     .toUpperCase();
 
                   return (
-                    <tr key={user.id} className="hover:bg-slate-900/40 transition-colors">
-                      <td className="p-4 pl-6">
+                    <tr key={user.id} className="hover:bg-slate-900/40 transition-colors duration-150">
+                      <td className="p-3.5 pl-5">
                         <div className="flex items-center gap-3">
-                          <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700/80 flex items-center justify-center font-bold text-xs text-white shrink-0">
+                          <div className="h-8 w-8 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-xs text-white shrink-0">
                             {initials}
                           </div>
                           <div>
                             <div className="font-semibold text-white flex items-center gap-1.5">
                               <span>{user.full_name || "Unnamed Driver"}</span>
                               {isSelf && (
-                                <span className="text-[10px] bg-emerald-950 text-emerald-400 border border-emerald-800/60 px-1.5 py-0.2 rounded font-normal">
+                                <span className="text-[10px] bg-emerald-950 text-emerald-400 border border-emerald-800 px-1 rounded font-normal">
                                   You
                                 </span>
                               )}
@@ -294,27 +281,27 @@ export default function AdminUsersPage() {
                           </div>
                         </div>
                       </td>
-                      <td className="p-4 font-mono text-slate-300">
+                      <td className="p-3.5 font-mono text-slate-300">
                         {user.phone_number || "—"}
                       </td>
-                      <td className="p-4">
+                      <td className="p-3.5">
                         <Badge
                           variant={user.role === "admin" ? "destructive" : "secondary"}
-                          className="text-[10px] font-mono uppercase"
+                          className="text-[10px] font-mono capitalize"
                         >
                           {user.role}
                         </Badge>
                       </td>
-                      <td className="p-4 text-slate-400 font-mono">
+                      <td className="p-3.5 text-slate-400 font-mono">
                         {formatDate(user.created_at)}
                       </td>
-                      <td className="p-4 pr-6 text-right">
+                      <td className="p-3.5 pr-5 text-right">
                         <div className="inline-flex items-center gap-2">
                           <Button
                             variant="outline"
                             size="sm"
                             onClick={() => handleToggleAdmin(user.id, user.role)}
-                            className="text-[11px] h-8 rounded-xl border-slate-700 text-slate-200 hover:bg-slate-800"
+                            className="text-[11px] h-8 rounded-lg border-slate-700 text-slate-200 hover:bg-slate-800"
                           >
                             {user.role === "admin" ? "Revoke Admin" : "Make Admin"}
                           </Button>
@@ -325,9 +312,9 @@ export default function AdminUsersPage() {
                             disabled={isSelf}
                             onClick={() => setUserToDelete(user)}
                             title={isSelf ? "You cannot delete your own account" : "Permanently delete user"}
-                            className="text-[11px] h-8 px-3 rounded-xl bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/40 font-semibold"
+                            className="text-[11px] h-8 px-2.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-medium"
                           >
-                            <Trash2 className="h-3.5 w-3.5 mr-1.5" />
+                            <Trash2 className="h-3.5 w-3.5 mr-1" />
                             Delete User
                           </Button>
                         </div>
@@ -349,11 +336,11 @@ export default function AdminUsersPage() {
         }}
       >
         <DialogHeader>
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-rose-950/80 text-rose-500 border border-rose-800/50 mb-3 shadow-lg shadow-rose-950/50">
-            <AlertTriangle className="h-7 w-7" />
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-rose-950 text-rose-500 border border-rose-800 mb-2">
+            <AlertTriangle className="h-6 w-6" />
           </div>
-          <DialogTitle className="text-center text-xl font-extrabold text-white">
-            Permanently Erase User Account?
+          <DialogTitle className="text-center text-lg font-bold text-white">
+            Permanently erase user account?
           </DialogTitle>
           <DialogDescription className="text-center text-xs text-slate-400 mt-1 leading-relaxed">
             Are you sure you want to completely erase{" "}
@@ -364,13 +351,13 @@ export default function AdminUsersPage() {
           </DialogDescription>
         </DialogHeader>
 
-        <div className="bg-rose-950/30 border border-rose-900/50 rounded-2xl p-4 my-3 text-xs text-rose-300 space-y-2.5">
-          <p className="font-bold text-rose-400 flex items-center gap-1.5">
-            <ShieldAlert className="h-4 w-4" /> Irreversible Consequences:
+        <div className="bg-rose-950/40 border border-rose-900 rounded-xl p-3.5 my-3 text-xs text-rose-300 space-y-2">
+          <p className="font-semibold text-rose-400 flex items-center gap-1.5">
+            <ShieldAlert className="h-4 w-4" /> Irreversible consequences:
           </p>
-          <ul className="list-disc pl-5 space-y-1.5 text-slate-300 leading-relaxed">
+          <ul className="list-disc pl-5 space-y-1 text-slate-300 leading-relaxed text-[11px]">
             <li>Account is deleted from Supabase Authentication (<code className="text-rose-400">auth.users</code>).</li>
-            <li>All associated vehicles, dynamic QR stickers, and contact settings are permanently wiped.</li>
+            <li>All associated vehicles, dynamic QR stickers, and settings are permanently wiped.</li>
             <li>
               <strong>If they attempt to log in with their old credentials, authentication will fail and they must register a brand new account from scratch.</strong>
             </li>
@@ -382,7 +369,7 @@ export default function AdminUsersPage() {
             variant="outline"
             onClick={() => setUserToDelete(null)}
             disabled={isDeleting}
-            className="text-xs rounded-xl border-slate-700 text-slate-300"
+            className="text-xs rounded-lg border-slate-700 text-slate-300"
           >
             Cancel
           </Button>
@@ -390,9 +377,9 @@ export default function AdminUsersPage() {
             variant="destructive"
             onClick={handleConfirmDelete}
             isLoading={isDeleting}
-            className="text-xs bg-rose-600 hover:bg-rose-500 text-white font-bold rounded-xl px-4 shadow-lg shadow-rose-950/40"
+            className="text-xs bg-rose-600 hover:bg-rose-500 text-white font-semibold rounded-lg px-4"
           >
-            Yes, Permanently Delete
+            Yes, permanently delete
           </Button>
         </DialogFooter>
       </Dialog>

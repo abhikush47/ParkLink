@@ -31,11 +31,8 @@ export default function ContactPage() {
           {/* Left contact info */}
           <div className="space-y-6">
             <div>
-              <span className="text-xs font-bold text-emerald-600 uppercase tracking-wider">
-                Support & Partnerships
-              </span>
-              <h1 className="text-3xl font-extrabold tracking-tight text-foreground mt-1">
-                Get in Touch with ParkLink
+              <h1 className="text-3xl font-extrabold tracking-tight text-foreground">
+                Get in touch with ParkLink
               </h1>
               <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
                 Whether you have questions about our dynamic vehicle QR codes, need campus

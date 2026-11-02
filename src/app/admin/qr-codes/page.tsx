@@ -127,18 +127,18 @@ export default function AdminQRCodesPage() {
       ) : (
         <div className="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden">
           <table className="w-full text-left text-xs text-slate-300">
-            <thead className="bg-slate-900 border-b border-slate-800 text-slate-400 uppercase font-semibold">
+            <thead className="bg-slate-900 border-b border-slate-800 text-slate-400 font-medium">
               <tr>
-                <th className="p-4">Token</th>
-                <th className="p-4">Vehicle</th>
-                <th className="p-4">Scans</th>
-                <th className="p-4">Status</th>
-                <th className="p-4 text-right">Actions</th>
+                <th className="p-3.5 pl-4">Token</th>
+                <th className="p-3.5">Vehicle</th>
+                <th className="p-3.5">Scans</th>
+                <th className="p-3.5">Status</th>
+                <th className="p-3.5 pr-4 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800">
               {filtered.map((qr) => (
-                <tr key={qr.id} className="hover:bg-slate-900/50 transition-colors">
+                <tr key={qr.id} className="hover:bg-slate-900/50 transition-colors duration-150">
                   <td className="p-4 font-mono font-bold text-emerald-400">
                     <Link
                       href={`/v/${qr.token}`}

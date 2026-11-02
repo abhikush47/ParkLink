@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { AlertCircle, CheckCircle2, ShieldAlert, Car, Eye, Lightbulb, Compass, HelpCircle } from "lucide-react";
+import { AlertCircle, CheckCircle2, ShieldAlert, Car, Eye, Lightbulb, Compass, HelpCircle, ShieldCheck } from "lucide-react";
 import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
@@ -19,7 +19,7 @@ const ALERT_CATEGORIES: { id: AlertCategory; label: string; icon: React.ReactNod
   {
     id: "blocking",
     label: "Vehicle is blocking another vehicle",
-    icon: <Car className="h-5 w-5 text-rose-500 shrink-0" />,
+    icon: <Car className="h-5 w-5 text-destructive shrink-0" />,
     desc: "I cannot move my car out because this vehicle is parked in front.",
   },
   {
@@ -31,25 +31,25 @@ const ALERT_CATEGORIES: { id: AlertCategory; label: string; icon: React.ReactNod
   {
     id: "lights_on",
     label: "Vehicle lights are switched on",
-    icon: <Lightbulb className="h-5 w-5 text-yellow-500 shrink-0" />,
-    desc: "Headlights or cabin lights left turned on, battery may drain.",
+    icon: <Lightbulb className="h-5 w-5 text-amber-500 shrink-0" />,
+    desc: "Headlights or hazard lights left turned on.",
   },
   {
     id: "window_open",
     label: "Vehicle window appears open",
-    icon: <Eye className="h-5 w-5 text-sky-500 shrink-0" />,
+    icon: <Eye className="h-5 w-5 text-foreground shrink-0" />,
     desc: "Window left down or partially open, risk of rain or theft.",
   },
   {
     id: "parked_incorrectly",
     label: "Vehicle may be parked incorrectly",
-    icon: <Compass className="h-5 w-5 text-purple-500 shrink-0" />,
-    desc: "Across lines, in reserved bay, or obstructing a pathway.",
+    icon: <Compass className="h-5 w-5 text-foreground shrink-0" />,
+    desc: "Across lines, in reserved bay, or obstructing pathway.",
   },
   {
     id: "other",
     label: "Other issue",
-    icon: <HelpCircle className="h-5 w-5 text-slate-500 shrink-0" />,
+    icon: <HelpCircle className="h-5 w-5 text-muted-foreground shrink-0" />,
     desc: "Custom note regarding this vehicle.",
   },
 ];
@@ -99,7 +99,6 @@ export function ParkingAlertModal({
 
   const handleClose = () => {
     onOpenChange(false);
-    // Reset state after closing animation
     setTimeout(() => {
       setSubmitted(false);
       setCustomMessage("");
@@ -110,19 +109,19 @@ export function ParkingAlertModal({
   return (
     <Dialog open={open} onOpenChange={handleClose}>
       {submitted ? (
-        <div className="py-6 text-center space-y-4 animate-in fade-in zoom-in-95">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400">
-            <CheckCircle2 className="h-10 w-10" />
+        <div className="py-6 text-center space-y-4">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-xl bg-muted text-emerald-600">
+            <CheckCircle2 className="h-8 w-8" />
           </div>
           <div>
-            <h3 className="text-xl font-bold text-foreground">Alert Delivered!</h3>
-            <p className="text-sm text-muted-foreground mt-1 max-w-sm mx-auto">
+            <h3 className="text-lg font-bold text-foreground">Alert delivered</h3>
+            <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto">
               We notified the owner of <strong>{vehicleReg}</strong> immediately. They can view
               your alert in their notification centre.
             </p>
           </div>
-          <div className="pt-4">
-            <Button onClick={handleClose} className="w-full">
+          <div className="pt-2">
+            <Button onClick={handleClose} className="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs">
               Done
             </Button>
           </div>
@@ -131,14 +130,14 @@ export function ParkingAlertModal({
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <div className="flex items-center gap-2 mb-1">
-              <span className="p-2 rounded-lg bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300">
-                <ShieldAlert className="h-5 w-5" />
+              <span className="p-1.5 rounded-lg bg-muted text-emerald-600">
+                <ShieldAlert className="h-4 w-4" />
               </span>
-              <DialogTitle>Send Parking Alert</DialogTitle>
+              <DialogTitle>Send parking alert</DialogTitle>
             </div>
-            <DialogDescription>
+            <DialogDescription className="text-xs">
               Select the situation for vehicle <strong>{vehicleReg}</strong>. The owner will be
-              alerted immediately without revealing your identity.
+              alerted immediately without disclosing your phone number.
             </DialogDescription>
           </DialogHeader>
 
@@ -150,10 +149,10 @@ export function ParkingAlertModal({
                 <label
                   key={cat.id}
                   onClick={() => setSelectedCategory(cat.id)}
-                  className={`flex items-start gap-3 p-3 rounded-xl border text-left cursor-pointer transition-all ${
+                  className={`flex items-start gap-3 p-3 rounded-xl border text-left cursor-pointer transition-colors duration-150 ${
                     isSelected
-                      ? "border-emerald-600 bg-emerald-50/50 dark:bg-emerald-950/30 ring-1 ring-emerald-600"
-                      : "border-border hover:bg-muted/40"
+                      ? "border-emerald-600 bg-emerald-500/10 ring-1 ring-emerald-600"
+                      : "border-border hover:bg-muted"
                   }`}
                 >
                   <input
@@ -165,8 +164,8 @@ export function ParkingAlertModal({
                   />
                   <div className="mt-0.5">{cat.icon}</div>
                   <div className="flex-1">
-                    <div className="text-sm font-semibold text-foreground">{cat.label}</div>
-                    <div className="text-xs text-muted-foreground">{cat.desc}</div>
+                    <div className="text-xs font-semibold text-foreground">{cat.label}</div>
+                    <div className="text-[11px] text-muted-foreground">{cat.desc}</div>
                   </div>
                 </label>
               );
@@ -174,31 +173,34 @@ export function ParkingAlertModal({
           </div>
 
           {/* Optional Note */}
-          <div className="mt-4">
+          <div className="mt-3">
             <label className="text-xs font-medium text-foreground block mb-1">
-              Optional Message to Owner (max 500 chars)
+              Optional message to owner (max 500 chars)
             </label>
             <textarea
               rows={2}
               maxLength={500}
-              placeholder="e.g., I'm driving the red sedan parked right behind you, need to leave in 10 mins."
+              placeholder="e.g. Parked right behind you, need to leave in 10 minutes."
               value={customMessage}
               onChange={(e) => setCustomMessage(e.target.value)}
-              className="w-full text-xs rounded-lg border border-input bg-background p-2.5 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-emerald-500"
+              className="w-full text-xs rounded-lg border border-border bg-muted p-2.5 text-foreground placeholder:text-muted-foreground focus:outline-none"
             />
           </div>
 
           <div className="mt-2 flex items-center justify-between text-[11px] text-muted-foreground">
-            <span>🛡️ Privacy protected • Instant push notification</span>
-            <span>{customMessage.length}/500</span>
+            <span className="flex items-center gap-1">
+              <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
+              <span>Identity concealed / Realtime dispatch</span>
+            </span>
+            <span className="font-mono">{customMessage.length}/500</span>
           </div>
 
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={handleClose} disabled={isSubmitting}>
+          <DialogFooter className="gap-2 sm:gap-0 mt-4">
+            <Button type="button" variant="outline" onClick={handleClose} disabled={isSubmitting} className="text-xs">
               Cancel
             </Button>
-            <Button type="submit" isLoading={isSubmitting}>
-              Send Alert
+            <Button type="submit" isLoading={isSubmitting} className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium">
+              Send alert
             </Button>
           </DialogFooter>
         </form>
@@ -206,4 +208,3 @@ export function ParkingAlertModal({
     </Dialog>
   );
 }
-

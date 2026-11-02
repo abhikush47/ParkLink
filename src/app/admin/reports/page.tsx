@@ -98,10 +98,10 @@ export default function AdminReportsPage() {
                   <span className="p-1.5 rounded-lg bg-rose-950/60 text-rose-400">
                     <Flag className="h-4 w-4" />
                   </span>
-                  <span className="font-bold text-white text-sm uppercase tracking-wide">
+                  <span className="font-semibold text-white text-sm capitalize">
                     {r.reason.replace(/_/g, " ")}
                   </span>
-                  <Badge variant={r.status === "pending" ? "destructive" : "secondary"} className="text-[10px]">
+                  <Badge variant={r.status === "pending" ? "destructive" : "secondary"} className="text-[10px] font-mono capitalize">
                     {r.status}
                   </Badge>
                 </div>
@@ -112,15 +112,15 @@ export default function AdminReportsPage() {
               </div>
 
               <div className="bg-slate-900 p-3.5 rounded-xl border border-slate-800 text-xs text-slate-300">
-                <div className="text-slate-400 text-[10px] uppercase font-semibold mb-1">
-                  Reported Details:
+                <div className="text-slate-400 text-xs font-medium mb-1">
+                  Reported details:
                 </div>
                 {r.details || "No additional text details provided."}
               </div>
 
               <div className="flex items-center justify-between pt-2 border-t border-slate-800/80 text-xs">
-                <div className="text-slate-400 font-mono">
-                  Vehicle: <strong className="text-white">{r.vehicle?.registration_number || "Unspecified"}</strong>
+                <div className="text-slate-400">
+                  Vehicle: <strong className="text-white font-mono">{r.vehicle?.registration_number || "Unspecified"}</strong>
                 </div>
 
                 {r.status === "pending" && (

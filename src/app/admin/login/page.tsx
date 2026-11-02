@@ -79,7 +79,7 @@ function AdminLoginForm() {
   };
 
   return (
-    <div className="bg-slate-950 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl space-y-5">
+    <div className="bg-slate-950 border border-slate-800 rounded-xl p-6 sm:p-8 space-y-4">
       {authError && (
         <div className="p-3.5 rounded-xl bg-rose-950/40 border border-rose-900/60 text-xs text-rose-300 flex items-start gap-2.5">
           <AlertCircle className="h-4 w-4 shrink-0 mt-0.5 text-rose-400" />
@@ -157,7 +157,7 @@ export default function AdminLoginPage() {
             Super Admin Console
           </h1>
           <p className="text-xs text-slate-400">
-            Restricted access • System administrators only
+            Restricted access / System administrators only
           </p>
         </div>
 

@@ -65,23 +65,23 @@ export default function AdminAlertsPage() {
       ) : (
         <div className="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden">
           <table className="w-full text-left text-xs text-slate-300">
-            <thead className="bg-slate-900 border-b border-slate-800 text-slate-400 uppercase font-semibold">
+            <thead className="bg-slate-900 border-b border-slate-800 text-slate-400 font-medium">
               <tr>
-                <th className="p-4">Vehicle</th>
-                <th className="p-4">Category</th>
-                <th className="p-4">Custom Message</th>
-                <th className="p-4">Status</th>
-                <th className="p-4">Timestamp</th>
+                <th className="p-3.5 pl-4">Vehicle</th>
+                <th className="p-3.5">Category</th>
+                <th className="p-3.5">Custom message</th>
+                <th className="p-3.5">Status</th>
+                <th className="p-3.5 pr-4">Timestamp</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800">
               {alerts.map((a) => (
-                <tr key={a.id} className="hover:bg-slate-900/50 transition-colors">
-                  <td className="p-4 font-mono font-bold text-white">
+                <tr key={a.id} className="hover:bg-slate-900/50 transition-colors duration-150">
+                  <td className="p-3.5 pl-4 font-mono font-bold text-white">
                     {a.vehicle?.registration_number || "—"}
                   </td>
-                  <td className="p-4">
-                    <span className="font-semibold text-amber-400 uppercase tracking-wider text-[11px]">
+                  <td className="p-3.5">
+                    <span className="font-medium text-amber-400 text-xs capitalize">
                       {a.category.replace(/_/g, " ")}
                     </span>
                   </td>

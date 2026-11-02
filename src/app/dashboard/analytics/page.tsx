@@ -2,19 +2,13 @@
 
 import React, { useEffect, useState } from "react";
 import {
-  BarChart3,
   TrendingUp,
   Eye,
   AlertTriangle,
-  PhoneCall,
-  MessageCircle,
-  Car,
   ShieldCheck,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { Vehicle, VehicleQRCode } from "@/types/database";
 
 interface VehicleAnalytics {
   id: string;
@@ -95,80 +89,66 @@ export default function AnalyticsPage() {
   }, []);
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-border">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">
-            Vehicle & QR Analytics
-          </h1>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            Privacy-conscious telemetry: view interactions without tracking individual visitors.
-          </p>
-        </div>
+    <div className="space-y-6 max-w-7xl mx-auto">
+      <div className="pb-4 border-b border-border">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">
+          Vehicle & QR analytics
+        </h1>
+        <p className="text-xs text-muted-foreground mt-0.5">
+          Privacy-conscious telemetry: view interactions without tracking individual visitors.
+        </p>
       </div>
 
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <Skeleton className="h-28 rounded-xl" />
-          <Skeleton className="h-28 rounded-xl" />
-          <Skeleton className="h-28 rounded-xl" />
+          <Skeleton className="h-24 rounded-xl" />
+          <Skeleton className="h-24 rounded-xl" />
+          <Skeleton className="h-24 rounded-xl" />
         </div>
       ) : (
-        <div className="space-y-8">
+        <div className="space-y-6">
           {/* Top Metrics */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                  Total Scans
-                </CardTitle>
+            <div className="bg-card border border-border rounded-xl p-4 space-y-1">
+              <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
+                <span>Total scans</span>
                 <Eye className="h-4 w-4 text-emerald-600" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-foreground">{totalScans}</div>
-                <p className="text-[11px] text-muted-foreground mt-1">
-                  Lifetime QR views across all vehicles
-                </p>
-              </CardContent>
-            </Card>
+              </div>
+              <div className="text-2xl font-mono font-bold text-foreground">{totalScans}</div>
+              <p className="text-[11px] text-muted-foreground">
+                Lifetime QR views across all vehicles
+              </p>
+            </div>
 
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                  Parking Alerts
-                </CardTitle>
+            <div className="bg-card border border-border rounded-xl p-4 space-y-1">
+              <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
+                <span>Parking alerts</span>
                 <AlertTriangle className="h-4 w-4 text-amber-500" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-foreground">{totalAlerts}</div>
-                <p className="text-[11px] text-muted-foreground mt-1">
-                  Assistance alerts submitted by scanners
-                </p>
-              </CardContent>
-            </Card>
+              </div>
+              <div className="text-2xl font-mono font-bold text-foreground">{totalAlerts}</div>
+              <p className="text-[11px] text-muted-foreground">
+                Assistance alerts submitted by passersby
+              </p>
+            </div>
 
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                  Scan Conversion
-                </CardTitle>
+            <div className="bg-card border border-border rounded-xl p-4 space-y-1">
+              <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
+                <span>Scan conversion</span>
                 <TrendingUp className="h-4 w-4 text-emerald-600" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-foreground">
-                  {totalScans > 0 ? ((totalAlerts / totalScans) * 100).toFixed(1) : "0"}%
-                </div>
-                <p className="text-[11px] text-muted-foreground mt-1">
-                  Scans resulting in an active alert
-                </p>
-              </CardContent>
-            </Card>
+              </div>
+              <div className="text-2xl font-mono font-bold text-foreground">
+                {totalScans > 0 ? ((totalAlerts / totalScans) * 100).toFixed(1) : "0"}%
+              </div>
+              <p className="text-[11px] text-muted-foreground">
+                Scans resulting in an active alert
+              </p>
+            </div>
           </div>
 
           {/* Scans per Vehicle Breakdown */}
-          <div className="bg-card border border-border rounded-2xl p-6 shadow-sm space-y-4">
-            <h2 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">
-              Scans & Alerts Per Vehicle
+          <div className="bg-card border border-border rounded-xl p-6 space-y-4">
+            <h2 className="text-sm font-semibold text-foreground">
+              Scans and alerts per vehicle
             </h2>
 
             {vehicles.length === 0 ? (
@@ -184,18 +164,17 @@ export default function AnalyticsPage() {
                   return (
                     <div key={v.id} className="space-y-1.5">
                       <div className="flex items-center justify-between text-xs">
-                        <span className="font-bold text-foreground font-mono">
+                        <span className="font-mono font-semibold text-foreground">
                           {v.reg} ({v.brand} {v.model})
                         </span>
-                        <span className="text-muted-foreground">
-                          <strong className="text-foreground">{v.scans}</strong> scans •{" "}
-                          <strong className="text-foreground">{v.alerts}</strong> alerts
+                        <span className="text-muted-foreground font-mono text-[11px]">
+                          {v.scans} scans / {v.alerts} alerts
                         </span>
                       </div>
-                      <div className="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                      <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-emerald-600 rounded-full transition-all duration-500"
-                          style={{ width: `${Math.max(scanPct, 4)}%` }}
+                          className="h-full bg-emerald-600 rounded-full"
+                          style={{ width: `${Math.max(scanPct, 3)}%` }}
                         />
                       </div>
                     </div>
@@ -205,12 +184,12 @@ export default function AnalyticsPage() {
             )}
           </div>
 
-          {/* Privacy Compliance Callout */}
-          <div className="bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800/40 rounded-2xl p-5 flex items-start gap-3 text-xs">
-            <ShieldCheck className="h-5 w-5 text-emerald-600 shrink-0 mt-0.5" />
+          {/* Privacy Guarantee */}
+          <div className="bg-muted border border-border rounded-xl p-4 flex items-start gap-3 text-xs">
+            <ShieldCheck className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
             <div className="space-y-1">
-              <h4 className="font-bold text-emerald-900 dark:text-emerald-200">
-                Zero Personal Surveillance Guarantee
+              <h4 className="font-semibold text-foreground">
+                Zero personal surveillance guarantee
               </h4>
               <p className="text-muted-foreground leading-relaxed">
                 ParkLink analytics only aggregate high-level view actions. We do not track or store
@@ -223,4 +202,3 @@ export default function AnalyticsPage() {
     </div>
   );
 }
-

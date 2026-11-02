@@ -100,15 +100,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col md:flex-row">
+    <div className="min-h-screen bg-background flex flex-col md:flex-row">
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex w-64 flex-col border-r border-border bg-card p-5 space-y-6 shrink-0">
         {/* Brand */}
         <Link href="/" className="flex items-center gap-2.5 px-2">
-          <div className="h-9 w-9 rounded-xl bg-emerald-600 flex items-center justify-center text-white font-black text-lg shadow-sm">
+          <div className="h-8 w-8 rounded-lg bg-emerald-600 flex items-center justify-center text-white font-bold text-sm">
             P
           </div>
-          <span className="text-xl font-bold tracking-tight text-foreground">
+          <span className="text-lg font-bold tracking-tight text-foreground">
             Park<span className="text-emerald-600">Link</span>
           </span>
         </Link>
@@ -125,19 +125,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+                className={`flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-colors duration-150 ${
                   isActive
-                    ? "bg-emerald-600 text-white shadow-sm"
+                    ? "bg-emerald-600 text-white font-semibold"
                     : "text-muted-foreground hover:bg-muted hover:text-foreground"
                 }`}
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2.5">
                   <Icon className="h-4 w-4 shrink-0" />
                   <span>{item.label}</span>
                 </div>
                 {item.href === "/dashboard/notifications" && unreadCount > 0 && (
                   <span
-                    className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
+                    className={`text-[10px] px-1.5 py-0.2 rounded font-mono ${
                       isActive ? "bg-white text-emerald-800" : "bg-emerald-600 text-white"
                     }`}
                   >
@@ -150,10 +150,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
           {/* Super Admin Access Link if user is admin */}
           {profile?.role === "admin" && (
-            <div className="pt-4 mt-4 border-t border-border">
+            <div className="pt-3 mt-3 border-t border-border">
               <Link
                 href="/admin"
-                className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
+                className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-destructive hover:bg-destructive/10 transition-colors duration-150"
               >
                 <Shield className="h-4 w-4 shrink-0" />
                 <span>Super Admin Panel</span>
@@ -163,26 +163,27 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </nav>
 
         {/* User mini badge & Sign out */}
-        <div className="pt-4 border-t border-border flex items-center justify-between">
-          <div className="flex items-center gap-2.5 min-w-0">
-            <div className="h-8 w-8 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-foreground font-bold text-xs shrink-0">
-              {profile?.full_name?.charAt(0).toUpperCase() || <User className="h-4 w-4" />}
+        <div className="pt-3 border-t border-border flex items-center justify-between">
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="h-7 w-7 rounded-full bg-muted flex items-center justify-center text-foreground font-semibold text-xs shrink-0">
+              {profile?.full_name?.charAt(0).toUpperCase() || <User className="h-3.5 w-3.5" />}
             </div>
             <div className="min-w-0 flex-1">
-              <div className="text-xs font-semibold text-foreground truncate">
+              <div className="text-xs font-medium text-foreground truncate">
                 {profile?.full_name || "Vehicle Owner"}
               </div>
-              <div className="text-[10px] text-muted-foreground truncate">
+              <div className="text-[10px] text-muted-foreground truncate font-mono">
                 {profile?.phone_number || "Active Account"}
               </div>
             </div>
           </div>
           <button
+            type="button"
             onClick={handleSignOut}
-            className="p-1.5 text-muted-foreground hover:text-destructive hover:bg-muted rounded-lg transition-colors"
+            className="p-1.5 text-muted-foreground hover:text-destructive hover:bg-muted rounded transition-colors duration-150"
             title="Sign Out"
           >
-            <LogOut className="h-4 w-4" />
+            <LogOut className="h-3.5 w-3.5" />
           </button>
         </div>
       </aside>
@@ -190,19 +191,20 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top Header Bar */}
-        <header className="h-16 border-b border-border bg-card px-4 sm:px-8 flex items-center justify-between sticky top-0 z-30">
+        <header className="h-14 border-b border-border bg-card px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30">
           <div className="flex items-center gap-3">
             <button
+              type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 text-muted-foreground hover:text-foreground rounded-lg"
+              className="md:hidden p-1.5 text-muted-foreground hover:text-foreground rounded"
               aria-label="Toggle menu"
             >
-              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
             </button>
             <div className="text-xs font-medium text-muted-foreground hidden sm:flex items-center gap-1.5">
               <span>ParkLink</span>
               <ChevronRight className="h-3 w-3" />
-              <span className="text-foreground font-semibold capitalize">
+              <span className="text-foreground capitalize">
                 {pathname?.split("/").pop() || "Dashboard"}
               </span>
             </div>
@@ -210,15 +212,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
           <div className="flex items-center gap-3">
             <ThemeToggle />
-            <Link href="/dashboard/notifications" className="relative p-2 text-muted-foreground hover:text-foreground rounded-lg">
+            <Link href="/dashboard/notifications" className="relative p-1.5 text-muted-foreground hover:text-foreground rounded">
               <Bell className="h-4 w-4" />
               {unreadCount > 0 && (
-                <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-emerald-500 animate-ping" />
+                <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-emerald-600" />
               )}
             </Link>
             <Link href="/dashboard/vehicles/new">
-              <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs h-8">
-                + Add Vehicle
+              <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs h-8 px-3">
+                + Add vehicle
               </Button>
             </Link>
           </div>
@@ -226,7 +228,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-b border-border bg-card p-4 space-y-1 animate-in slide-in-from-top-2">
+          <div className="md:hidden border-b border-border bg-card p-4 space-y-1">
             {NAV_ITEMS.map((item) => {
               const isActive =
                 pathname === item.href ||
@@ -238,41 +240,40 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   key={item.href}
                   href={item.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold ${
+                  className={`flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium ${
                     isActive
                       ? "bg-emerald-600 text-white"
                       : "text-muted-foreground hover:bg-muted"
                   }`}
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2.5">
                     <Icon className="h-4 w-4" />
                     <span>{item.label}</span>
                   </div>
                   {item.href === "/dashboard/notifications" && unreadCount > 0 && (
-                    <span className="text-[10px] bg-white text-emerald-800 font-bold px-1.5 py-0.5 rounded-full">
+                    <span className="text-[10px] bg-white text-emerald-800 font-mono px-1.5 py-0.2 rounded">
                       {unreadCount}
                     </span>
                   )}
                 </Link>
               );
             })}
-            <div className="pt-3 border-t border-border">
+            <div className="pt-2 border-t border-border">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={handleSignOut}
                 className="w-full justify-start text-xs text-destructive hover:bg-destructive/10"
               >
-                <LogOut className="mr-2 h-4 w-4" /> Sign Out
+                <LogOut className="mr-2 h-3.5 w-3.5" /> Sign out
               </Button>
             </div>
           </div>
         )}
 
         {/* Page Content */}
-        <main className="flex-1 p-4 sm:p-8 max-w-7xl w-full mx-auto">{children}</main>
+        <main className="flex-1 p-4 sm:p-6 max-w-7xl w-full mx-auto">{children}</main>
       </div>
     </div>
   );
 }
-
