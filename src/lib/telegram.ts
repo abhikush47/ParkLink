@@ -43,11 +43,19 @@ export function getTelegramConfig() {
   const username = process.env.TELEGRAM_BOT_USERNAME?.trim() || "MyParkLinkAlertbot";
   const webhookSecret = process.env.TELEGRAM_WEBHOOK_SECRET?.trim() || "";
 
+  // Canonical production URL for all Telegram bot deep links and buttons
   let appUrl = "https://parklink-dusky.vercel.app";
-  if (process.env.NEXT_PUBLIC_APP_URL && !process.env.NEXT_PUBLIC_APP_URL.includes("localhost")) {
+  if (
+    process.env.NEXT_PUBLIC_APP_URL &&
+    !process.env.NEXT_PUBLIC_APP_URL.includes("localhost") &&
+    !process.env.NEXT_PUBLIC_APP_URL.includes("-git-")
+  ) {
     appUrl = process.env.NEXT_PUBLIC_APP_URL.replace(/\/$/, "");
-  } else if (process.env.VERCEL_URL) {
-    appUrl = `https://${process.env.VERCEL_URL}`;
+  } else if (
+    process.env.VERCEL_PROJECT_PRODUCTION_URL &&
+    !process.env.VERCEL_PROJECT_PRODUCTION_URL.includes("localhost")
+  ) {
+    appUrl = `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL.replace(/\/$/, "")}`;
   }
 
   return {
