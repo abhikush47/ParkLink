@@ -43,11 +43,13 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(data, { status: statusCode });
       }
 
-      // Dispatch Telegram Anonymous Message notification asynchronously
+      // Dispatch Telegram Anonymous Message notification instantly
       if (data.message_id) {
-        dispatchTelegramAnonymousMessage(data.message_id).catch((err) => {
-          console.error("[Telegram Anonymous Message Dispatch Error]", err);
-        });
+        try {
+          await dispatchTelegramAnonymousMessage(data.message_id);
+        } catch (tgErr) {
+          console.error("[Telegram Anonymous Message Dispatch Error]", tgErr);
+        }
       }
 
       return NextResponse.json(data, { status: 200 });

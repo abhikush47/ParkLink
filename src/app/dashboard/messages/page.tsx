@@ -28,6 +28,9 @@ export default function MessagesRelayPage() {
 
   useEffect(() => {
     let isMounted = true;
+    let msgChannel: any = null;
+    let pollInterval: any = null;
+
     async function loadMessages() {
       try {
         setLoading(true);
@@ -56,6 +59,58 @@ export default function MessagesRelayPage() {
               if (isMounted && mData) {
                 setMessages(mData as any);
               }
+
+              // Realtime messages subscription
+              msgChannel = supabase
+                .channel("realtime-anonymous-messages")
+                .on(
+                  "postgres_changes",
+                  {
+                    event: "*",
+                    schema: "public",
+                    table: "anonymous_messages",
+                  },
+                  async (payload) => {
+                    if (payload.eventType === "INSERT") {
+                      const newMsg = payload.new as AnonymousMessage;
+                      const matchV = vData.find((v) => v.id === newMsg.vehicle_id);
+                      if (matchV) {
+                        const fullMsg = { ...newMsg, vehicle: matchV };
+                        setMessages((prev) => [fullMsg as any, ...prev.filter((m) => m.id !== fullMsg.id)]);
+                        toast.info(`New message regarding ${matchV.registration_number}`);
+                      }
+                    } else if (payload.eventType === "UPDATE") {
+                      const updated = payload.new as AnonymousMessage;
+                      setMessages((prev) =>
+                        prev.map((m) =>
+                          m.id === updated.id
+                            ? { ...m, ...updated, vehicle: m.vehicle }
+                            : m
+                        )
+                      );
+                    }
+                  }
+                )
+                .subscribe();
+
+              // Resilient 5s poll
+              pollInterval = setInterval(async () => {
+                if (!isMounted) return;
+                const { data: freshMsgs } = await supabase
+                  .from("anonymous_messages")
+                  .select("*, vehicle:vehicles(*)")
+                  .in("vehicle_id", vehicleIds)
+                  .order("created_at", { ascending: false });
+
+                if (isMounted && freshMsgs) {
+                  setMessages((prev) => {
+                    const isDiff =
+                      freshMsgs.length !== prev.length ||
+                      freshMsgs.some((fm, i) => fm.id !== prev[i]?.id || fm.status !== prev[i]?.status);
+                    return isDiff ? (freshMsgs as any) : prev;
+                  });
+                }
+              }, 5000);
             }
           }
         }
@@ -69,6 +124,11 @@ export default function MessagesRelayPage() {
     loadMessages();
     return () => {
       isMounted = false;
+      if (msgChannel) {
+        const supabase = createClient();
+        supabase.removeChannel(msgChannel);
+      }
+      if (pollInterval) clearInterval(pollInterval);
     };
   }, []);
 

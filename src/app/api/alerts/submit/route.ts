@@ -56,11 +56,9 @@ export async function POST(request: NextRequest) {
               .eq("id", alertId);
           }
 
-          // Dispatch Telegram notification asynchronously
-          dispatchTelegramParkingAlert(alertId, {
+          // Dispatch Telegram notification instantly
+          await dispatchTelegramParkingAlert(alertId, {
             requesterPhone: requester_phone?.trim(),
-          }).catch((err) => {
-            console.error("[Telegram Dispatch Error]", err);
           });
         } catch (dispatchErr) {
           console.warn("[Telegram Dispatch Warning]", dispatchErr);

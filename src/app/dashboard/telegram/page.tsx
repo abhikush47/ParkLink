@@ -27,6 +27,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/toast";
 import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { createClient } from "@/lib/supabase/client";
 
 interface TelegramStatusResponse {
   success: boolean;
@@ -109,13 +110,41 @@ export default function TelegramIntegrationPage() {
     fetchStatus();
   }, []);
 
-  // Poll for connection while deep link dialog is active
+  // Live connection listener & fast polling while link is pending
   useEffect(() => {
     if (!deepLink || statusData?.isConnected) return;
+    let isSubscribed = true;
+
+    // 1. Supabase Realtime channel
+    const supabase = createClient();
+    const channel = supabase
+      .channel("realtime-tg-connection-status")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "telegram_connections",
+        },
+        () => {
+          if (isSubscribed) {
+            fetchStatus(true);
+            toast.success("Telegram connected successfully!");
+          }
+        }
+      )
+      .subscribe();
+
+    // 2. Fast 2-second polling fallback
     const interval = setInterval(() => {
-      fetchStatus(true);
-    }, 3000);
-    return () => clearInterval(interval);
+      if (isSubscribed) fetchStatus(true);
+    }, 2000);
+
+    return () => {
+      isSubscribed = false;
+      supabase.removeChannel(channel);
+      clearInterval(interval);
+    };
   }, [deepLink, statusData?.isConnected]);
 
   // Generate deep-link token

@@ -66,7 +66,10 @@ export default function ParkingAlertsPage() {
 
   useEffect(() => {
     let isMounted = true;
-    async function loadAlerts() {
+    let channel: any = null;
+    let pollInterval: any = null;
+
+    async function init() {
       try {
         setLoading(true);
         const supabase = createClient();
@@ -74,29 +77,89 @@ export default function ParkingAlertsPage() {
           data: { user },
         } = await supabase.auth.getUser();
 
-        if (user) {
-          const { data: vData } = await supabase
-            .from("vehicles")
-            .select("*")
-            .eq("owner_id", user.id);
+        if (!user) return;
 
-          if (isMounted && vData) {
-            setVehicles(vData);
-            const vehicleIds = vData.map((v) => v.id);
+        const { data: vData } = await supabase
+          .from("vehicles")
+          .select("*")
+          .eq("owner_id", user.id);
 
-            if (vehicleIds.length > 0) {
-              const { data: aData } = await supabase
-                .from("parking_alerts")
-                .select("*, vehicle:vehicles(*)")
-                .in("vehicle_id", vehicleIds)
-                .order("created_at", { ascending: false });
+        if (!isMounted || !vData) return;
+        setVehicles(vData);
 
-              if (isMounted && aData) {
-                setAlerts(aData as any);
+        const vehicleIds = vData.map((v) => v.id);
+        if (vehicleIds.length === 0) return;
+
+        // Fetch initial alerts
+        const { data: aData } = await supabase
+          .from("parking_alerts")
+          .select("*, vehicle:vehicles(*)")
+          .in("vehicle_id", vehicleIds)
+          .order("created_at", { ascending: false });
+
+        if (isMounted && aData) {
+          setAlerts(aData as any);
+        }
+
+        // 1. Supabase Realtime WebSocket Subscription (instantaneous update)
+        channel = supabase
+          .channel("realtime-dashboard-parking-alerts")
+          .on(
+            "postgres_changes",
+            {
+              event: "*",
+              schema: "public",
+              table: "parking_alerts",
+            },
+            async (payload) => {
+              if (payload.eventType === "INSERT") {
+                const newAlert = payload.new as ParkingAlert;
+                const matchVehicle = vData.find((v) => v.id === newAlert.vehicle_id);
+                if (matchVehicle) {
+                  const fullAlert: ParkingAlert = {
+                    ...newAlert,
+                    vehicle: matchVehicle,
+                  };
+                  setAlerts((prev) => {
+                    if (prev.some((a) => a.id === fullAlert.id)) return prev;
+                    return [fullAlert, ...prev];
+                  });
+                  toast.error(`Urgent: New parking alert for ${matchVehicle.registration_number}`);
+                }
+              } else if (payload.eventType === "UPDATE") {
+                const updated = payload.new as ParkingAlert;
+                setAlerts((prev) =>
+                  prev.map((a) =>
+                    a.id === updated.id
+                      ? { ...a, ...updated, vehicle: a.vehicle }
+                      : a
+                  )
+                );
+              } else if (payload.eventType === "DELETE") {
+                setAlerts((prev) => prev.filter((a) => a.id !== (payload.old as any).id));
               }
             }
+          )
+          .subscribe();
+
+        // 2. Resilient background sync polling (5 seconds)
+        pollInterval = setInterval(async () => {
+          if (!isMounted) return;
+          const { data: fresh } = await supabase
+            .from("parking_alerts")
+            .select("*, vehicle:vehicles(*)")
+            .in("vehicle_id", vehicleIds)
+            .order("created_at", { ascending: false });
+
+          if (isMounted && fresh) {
+            setAlerts((prev) => {
+              const isDifferent =
+                fresh.length !== prev.length ||
+                fresh.some((f, idx) => f.id !== prev[idx]?.id || f.status !== prev[idx]?.status);
+              return isDifferent ? (fresh as any) : prev;
+            });
           }
-        }
+        }, 5000);
       } catch (err) {
         console.error("Failed to load alerts", err);
       } finally {
@@ -104,9 +167,15 @@ export default function ParkingAlertsPage() {
       }
     }
 
-    loadAlerts();
+    init();
+
     return () => {
       isMounted = false;
+      if (channel) {
+        const supabase = createClient();
+        supabase.removeChannel(channel);
+      }
+      if (pollInterval) clearInterval(pollInterval);
     };
   }, []);
 

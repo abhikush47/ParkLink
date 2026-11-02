@@ -31,6 +31,9 @@ export default function DashboardOverviewPage() {
 
   useEffect(() => {
     let isMounted = true;
+    let alertsChannel: any = null;
+    let pollInterval: any = null;
+
     async function fetchDashboardData() {
       try {
         setLoading(true);
@@ -69,6 +72,46 @@ export default function DashboardOverviewPage() {
                 .limit(5);
 
               if (recentAlerts) setAlerts(recentAlerts as any);
+
+              // Realtime listener for overview alerts
+              alertsChannel = supabase
+                .channel("overview-realtime-alerts")
+                .on(
+                  "postgres_changes",
+                  {
+                    event: "*",
+                    schema: "public",
+                    table: "parking_alerts",
+                  },
+                  async () => {
+                    const { data: freshAlerts } = await supabase
+                      .from("parking_alerts")
+                      .select("*, vehicle:vehicles(*)")
+                      .in("vehicle_id", vehicleIds)
+                      .order("created_at", { ascending: false })
+                      .limit(5);
+
+                    if (isMounted && freshAlerts) {
+                      setAlerts(freshAlerts as any);
+                    }
+                  }
+                )
+                .subscribe();
+
+              // Resilient 5s polling for overview
+              pollInterval = setInterval(async () => {
+                if (!isMounted) return;
+                const { data: pollAlerts } = await supabase
+                  .from("parking_alerts")
+                  .select("*, vehicle:vehicles(*)")
+                  .in("vehicle_id", vehicleIds)
+                  .order("created_at", { ascending: false })
+                  .limit(5);
+
+                if (isMounted && pollAlerts) {
+                  setAlerts(pollAlerts as any);
+                }
+              }, 5000);
             }
           }
 
@@ -94,6 +137,11 @@ export default function DashboardOverviewPage() {
     fetchDashboardData();
     return () => {
       isMounted = false;
+      if (alertsChannel) {
+        const supabase = createClient();
+        supabase.removeChannel(alertsChannel);
+      }
+      if (pollInterval) clearInterval(pollInterval);
     };
   }, []);
 

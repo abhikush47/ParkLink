@@ -49,6 +49,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   useEffect(() => {
     let isMounted = true;
+    let notifChannel: any = null;
+    let pollInterval: any = null;
+
     async function fetchSession() {
       try {
         const supabase = createClient();
@@ -77,6 +80,42 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           if (isMounted && count !== null) {
             setUnreadCount(count);
           }
+
+          // Realtime notification listener
+          notifChannel = supabase
+            .channel(`realtime-notifications-${user.id}`)
+            .on(
+              "postgres_changes",
+              {
+                event: "INSERT",
+                schema: "public",
+                table: "notifications",
+                filter: `user_id=eq.${user.id}`,
+              },
+              (payload: any) => {
+                if (isMounted) {
+                  setUnreadCount((prev) => prev + 1);
+                  if (payload.new?.title) {
+                    toast.info(payload.new.title);
+                  }
+                }
+              }
+            )
+            .subscribe();
+
+          // Resilient 8s poll
+          pollInterval = setInterval(async () => {
+            if (!isMounted) return;
+            const { count: freshCount } = await supabase
+              .from("notifications")
+              .select("*", { count: "exact", head: true })
+              .eq("user_id", user.id)
+              .eq("is_read", false);
+
+            if (isMounted && freshCount !== null) {
+              setUnreadCount(freshCount);
+            }
+          }, 8000);
         }
       } catch (err) {
         console.error("Dashboard session load error", err);
@@ -86,6 +125,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     fetchSession();
     return () => {
       isMounted = false;
+      if (notifChannel) {
+        const supabase = createClient();
+        supabase.removeChannel(notifChannel);
+      }
+      if (pollInterval) clearInterval(pollInterval);
     };
   }, [pathname]);
 
